@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
+import { ICategory } from '~/interfaces/category.interface';
 
-const schema = mongoose.Schema;
-
-const categorySchema = new schema({
+const categorySchema: Schema<ICategory> = new Schema<ICategory>({
   name: {
     type: String,
     default: ''
@@ -13,6 +12,6 @@ const categorySchema = new schema({
   }
 });
 
-const categoryModel = mongoose.models.category || mongoose.model('category', categorySchema);
+const categoryModel = mongoose.models.category || model('category', categorySchema);
 
 export default categoryModel;

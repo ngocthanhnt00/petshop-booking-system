@@ -1,18 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import { UserRoles, UserStatus } from '~/enums/user.enum.js';
+import { IUser } from '~/interfaces/user.interface.js';
 
-const schema = mongoose.Schema;
-
-const userSchema = new schema(
+const userSchema: Schema<IUser> = new Schema<IUser>(
   {
     email: {
       type: String,
       required: true,
       unique: true
     },
-    user_name: {
+    fullname: {
       type: String,
-      required: true
+      required: false
     },
     password: {
       type: String,
@@ -39,6 +38,6 @@ const userSchema = new schema(
   { timestamps: true }
 );
 
-const userModel = mongoose.models.user || mongoose.model('user', userSchema);
+const userModel = mongoose.models.user || model('user', userSchema);
 
 export default userModel;

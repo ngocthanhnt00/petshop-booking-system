@@ -1,8 +1,9 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import category from './category.model.js';
 import { ProductStatus } from '../enums/product.enum.js';
-const schema = mongoose.Schema;
-const productSchema = new schema(
+import { IProduct } from '~/interfaces/product.interface.js';
+
+const productSchema: Schema<IProduct> = new Schema<IProduct>(
   {
     name: {
       type: String,
@@ -12,12 +13,12 @@ const productSchema = new schema(
       type: String,
       required: true
     },
-    prire: {
+    price: {
       type: String,
       required: true
     },
     category_id: {
-      type: schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: category,
       autopopulate: true, // .populate allow to access data of Object references
       required: [true, 'category_id is required']
@@ -38,6 +39,6 @@ const productSchema = new schema(
   { timestamps: true }
 );
 
-const productModel = mongoose.models.product || mongoose.model('product', productSchema);
+const productModel = mongoose.models.product || model('product', productSchema);
 
 export default productModel;

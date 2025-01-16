@@ -3,30 +3,30 @@ import bcryptjs from 'bcryptjs';
 import userModel from '~/models/user.model.js'; // Adjust the path according to your project structure
 import { generateTokenAndSetCookie } from '~/utils/generateToken.js'; // Adjust the path according to your project structure
 
-export const signupController = async (req: Request, res: Response): Promise<Response | void> => {
+export const signupController = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password, username } = req.body;
-    if (!email || !password || !username) {
-      return res.status(400).json({
+    const { email, password, fullname } = req.body;
+    if (!email || !password || !fullname) {
+      res.status(400).json({
         success: false,
-        message: 'Please provide an email, password and username'
+        message: 'Please provide an email, password and fullname'
       });
     }
 
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regexEmail.test(email)) {
-      return res.status(400).json({ success: false, message: 'Please provide a valid email' });
+      res.status(400).json({ success: false, message: 'Please provide a valid email' });
     }
 
     if (password.length < 6) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Password must be at least 6 characters'
       });
     }
 
-    if (username.length < 3) {
-      return res.status(400).json({
+    if (fullname.length < 3) {
+      res.status(400).json({
         success: false,
         message: 'Username must be at least 3 characters'
       });
@@ -34,19 +34,18 @@ export const signupController = async (req: Request, res: Response): Promise<Res
 
     const existingUserByEmail = await userModel.findOne({ email });
     if (existingUserByEmail) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'User with this email already exists'
       });
     }
-
-    const existingUserByName = await userModel.findOne({ username });
-    if (existingUserByName) {
-      return res.status(400).json({
-        success: false,
-        message: 'User with this username already exists'
-      });
-    }
+    // const existingUserByName = await userModel.findOne({ username });
+    // if (existingUserByName) {
+    //   res.status(400).json({
+    //     success: false,
+    //     message: 'User with this username already exists'
+    //   });
+    // }
 
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(password, salt);
@@ -57,7 +56,7 @@ export const signupController = async (req: Request, res: Response): Promise<Res
     const newUser = new userModel({
       email,
       password: hashedPassword,
-      username,
+      fullname,
       image: PROFILE_PIC[avatar]
     });
 
@@ -75,5 +74,56 @@ export const signupController = async (req: Request, res: Response): Promise<Res
       console.error('Error signing up:', error);
     }
     res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
+export const loginController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, password } = req.body;
+    console.log('Email', email);
+    console.log('Password', password);
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      res.status(404).json({ success: false, message: 'Invalid email and password' });
+    }
+
+    const isPasswordValid = await bcryptjs.compare(password, user.password);
+    if (!isPasswordValid) {
+      res.status(401).json({ success: false, message: 'Invalid email and password' });
+    }
+
+    generateTokenAndSetCookie(user._id, res);
+    res.status(200).json({ success: true, user: { ...user._doc, password: '' } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+export const logoutController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    res.clearCookie('token');
+    res.status(200).json({ success: true, message: 'Logged out successfully' });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(`Error logging out: ${error.message}`);
+    } else {
+      console.log('Error logging out:', error);
+    }
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+export const authCheckController = async (
+  req: Request & { user?: { _id: string; email: string; role: string }; token?: string },
+  res: Response
+): Promise<void> => {
+  try {
+    console.log('req.user', req.user);
+    res.status(200).json({ success: true, user: req.user, token: req.token });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log('Error in authCheck controller', error.message);
+    } else {
+      console.log('Error in authCheck controller', error);
+    }
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
