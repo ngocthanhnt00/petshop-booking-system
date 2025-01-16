@@ -5,5 +5,5 @@
 	],
 	"ext": ".ts,.js",
 	"ignore": [],
-	"exec": "tsx ./src/index.ts"
+	"exec": "tsx index.ts"
 }

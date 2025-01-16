@@ -3,8 +3,8 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import logger from 'morgan';
 import authRouter from '~/routes/auth.routes.js';
-import ENV_VARS from './config.js';
-import { connectDB } from './database/db.js';
+import ENV_VARS from './src/config.js';
+import { connectDB } from './src/database/db.js';
 
 const app = express();
 const PORT = ENV_VARS.PORT;
