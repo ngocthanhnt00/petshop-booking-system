@@ -5,6 +5,7 @@ import logger from 'morgan';
 import authRouter from '~/routes/auth.routes.js';
 import ENV_VARS from './src/config.js';
 import { connectDB } from './src/database/db.js';
+import categoryRouter from '~/routes/category.routes.js';
 
 const app = express();
 const PORT = ENV_VARS.PORT;
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
   res.send('Hello World');
 });
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1', categoryRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);

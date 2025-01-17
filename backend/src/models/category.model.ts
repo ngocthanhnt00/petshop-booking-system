@@ -9,6 +9,10 @@ const categorySchema: Schema<ICategory> = new Schema<ICategory>({
   description: {
     type: String,
     default: ''
+  },
+  is_hidden: {
+    type: Boolean,
+    default: false
   }
 });
 

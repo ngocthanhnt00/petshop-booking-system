@@ -2,9 +2,10 @@ import jwt from 'jsonwebtoken';
 import ENV_VARS from '~/config.js';
 import userModel from '~/models/user.model.js';
 import { Request, Response, NextFunction } from 'express';
-
+import { IUser } from '~/interfaces/user.interface';
+import { UserRoles } from '~/enums/user.enum';
 interface AuthenticatedRequest extends Request {
-  user?: { _id: string; email: string; role: string };
+  user?: IUser;
   token?: string;
 }
 
@@ -39,11 +40,22 @@ export const protectRoute = async (req: AuthenticatedRequest, res: Response, nex
     }
 
     req.user = user;
-
     req.token = token;
     next();
   } catch (error) {
     console.error('Error in protectRoute middleware:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
+};
+export const requireAdmin = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+  if (!req.user) {
+    res.status(401).json({ message: 'Bạn chưa đăng nhập' });
+    return;
+  }
+
+  if (req.user.role !== UserRoles.ADMIN) {
+    res.status(403).json({ message: 'Bạn không có quyền thực hiện hành động này' });
+    return;
+  }
+  next();
 };
