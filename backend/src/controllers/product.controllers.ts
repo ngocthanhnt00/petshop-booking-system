@@ -40,3 +40,11 @@ export const insertProduct = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ message: 'Error creating product', error });
   }
 };
+
+export const deleteProduct = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.body;
+  } catch (error) {
+    res.status(500).json({ message: 'Error delete product', error });
+  }
+};
