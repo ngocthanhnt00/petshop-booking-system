@@ -2,11 +2,11 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import logger from 'morgan';
-import authRouter from '../routes/auth.routes.js';
 import ENV_VARS from './src/config.js';
 import { connectDB } from './src/database/db.js';
-import categoryRouter from '../routes/category.routes.js';
-import productRouter from '../routes/product.routes.js';
+import authRouter from './src/routes/auth.routes.js';
+import categoryRouter from './src/routes/category.routes.js';
+import productRouter from './src/routes/product.routes.js';
 
 const app = express();
 const PORT = ENV_VARS.PORT;
