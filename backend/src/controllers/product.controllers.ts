@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import productModel from '../models/product.model';
+import { ProductStatus, ProductStatusMapping } from '~/enums/product.enum';
 
 export const getAllProduct = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -41,10 +42,40 @@ export const insertProduct = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-export const deleteProduct = async (req: Request, res: Response): Promise<void> => {
+export const toggleProduct = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
+    const { status } = req.query;
+
+    console.log('ID Product:', id);
+    console.log('Status Product:', status);
+
+    if (!id) {
+      res.status(400).json({ message: 'Vui lòng cung cấp ID sản phẩm' });
+      return;
+    }
+
+    if (!status || typeof status !== 'string' || !(status.toUpperCase() in ProductStatusMapping)) {
+      res.status(400).json({ message: 'Trạng thái sản phẩm không hợp lệ' });
+      return;
+    }
+
+    const mappedStatus = ProductStatusMapping[status as keyof typeof ProductStatusMapping];
+
+    const product = await productModel.findById(id);
+    if (!product) {
+      res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+      return;
+    }
+
+    product.status = mappedStatus;
+    await product.save();
+
+    res.status(200).json({
+      message: `Trạng thái sản phẩm đã được cập nhật thành công: ${mappedStatus}`,
+      product
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Error delete product', error });
+    res.status(500).json({ message: 'Lỗi khi cập nhật trạng thái sản phẩm', error });
   }
 };

@@ -6,7 +6,7 @@ const categoryRouter = Router();
 
 categoryRouter.get('/categories', getAllCategory);
 categoryRouter.post('/categories', protectRoute, requireAdmin, insertCategory);
-categoryRouter.patch('categories/:id', protectRoute, requireAdmin, updateCategory);
+categoryRouter.patch('/categories/:id', protectRoute, requireAdmin, updateCategory);
 categoryRouter.delete('/categories/:id', protectRoute, requireAdmin, toggleCategory);
 
 export default categoryRouter;
