@@ -41,7 +41,39 @@ export const insertProduct = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ message: 'Error creating product', error });
   }
 };
+export const updateProduct = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    console.log(id, 'ID');
+    const { name, description, price, category_id, image_url, brand_id } = req.body;
 
+    if (!name || !description || !price || !category_id || !image_url || !brand_id) {
+      res.status(400).json({
+        success: false,
+        message: 'Vui lòng cung cấp đầy đủ các trường của sản phẩm'
+      });
+    }
+
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      { name, description, price, category_id, image_url, brand_id },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedProduct) {
+      res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+      return;
+    }
+
+    res.status(200).json({ message: 'Cập nhật sản phẩm thành công', product: updatedProduct });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(`Error product up: ${error.message}`);
+    } else {
+      console.error('Error product up:', error);
+    }
+  }
+};
 export const toggleProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
