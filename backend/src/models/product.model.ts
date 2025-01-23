@@ -1,7 +1,7 @@
 import mongoose, { Schema, model } from 'mongoose';
 import category from './category.model.js';
 import { ProductStatus } from '../enums/product.enum.js';
-import { IProduct } from '~/interfaces/product.interface.js';
+import { IProduct } from '../interfaces/product.interface.js';
 
 const productSchema: Schema<IProduct> = new Schema<IProduct>(
   {

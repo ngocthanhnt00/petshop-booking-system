@@ -4,8 +4,8 @@ import {
   loginController,
   logoutController,
   authCheckController
-} from '~/controllers/auth.controllers.js';
-import { protectRoute } from '~/middlewares/protectRoute.js';
+} from '../controllers/auth.controllers.js';
+import { protectRoute } from '../middlewares/protectRoute.js';
 
 const authRouter = Router();
 

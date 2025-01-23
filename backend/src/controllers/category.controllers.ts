@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { IUser } from '~/interfaces/user.interface';
-import categoryModel from '~/models/category.model';
+import { IUser } from '../interfaces/user.interface';
+import categoryModel from '../models/category.model';
 
 interface AuthenticatedRequest extends Request {
   user?: IUser;

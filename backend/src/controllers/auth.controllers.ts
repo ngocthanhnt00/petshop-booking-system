@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import bcryptjs from 'bcryptjs';
-import userModel from '~/models/user.model'; // Adjust the path according to your project structure
-import { generateTokenAndSetCookie } from '~/utils/generateToken.js'; // Adjust the path according to your project structure
+import userModel from '../models/user.model'; // Adjust the path according to your project structure
+import { generateTokenAndSetCookie } from '../utils/generateToken.js'; // Adjust the path according to your project structure
 
 export const signupController = async (req: Request, res: Response): Promise<void> => {
   try {

@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongoose';
-import { ProductStatus } from '~/enums/product.enum.js';
+import { ProductStatus } from '../enums/product.enum.js';
 import { ICategory } from './category.interface.js';
 import { IBrand } from './brand.interface.js';
 

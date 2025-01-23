@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import ENV_VARS from '~/config.js';
+import ENV_VARS from '../config.js';
 import { Response } from 'express';
 
 export const generateTokenAndSetCookie = async (userId: string, res: Response) => {

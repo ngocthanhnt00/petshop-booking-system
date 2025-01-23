@@ -1,4 +1,4 @@
-import { UserRoles, UserStatus } from '~/enums/user.enum.js';
+import { UserRoles, UserStatus } from '../enums/user.enum.js';
 
 export interface IUser {
   _id: string;

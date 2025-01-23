@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getAllProduct, insertProduct, toggleProduct, updateProduct } from '~/controllers/product.controllers';
-import { protectRoute, requireAdmin } from '~/middlewares/protectRoute';
+import { getAllProduct, insertProduct, toggleProduct, updateProduct } from '../controllers/product.controllers';
+import { protectRoute, requireAdmin } from '../middlewares/protectRoute';
 
 const productRouter = Router();
 productRouter.get('/products', getAllProduct);

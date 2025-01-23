@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { getAllCategory, toggleCategory, insertCategory, updateCategory } from '~/controllers/category.controllers';
-import { protectRoute, requireAdmin } from '~/middlewares/protectRoute';
+import { getAllCategory, toggleCategory, insertCategory, updateCategory } from '../controllers/category.controllers';
+import { protectRoute, requireAdmin } from '../middlewares/protectRoute';
 
 const categoryRouter = Router();
 

@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
-import ENV_VARS from '~/config.js';
-import userModel from '~/models/user.model.js';
+import ENV_VARS from '../config.js';
+import userModel from '../models/user.model.js';
 import { Request, Response, NextFunction } from 'express';
-import { IUser } from '~/interfaces/user.interface';
-import { UserRoles } from '~/enums/user.enum';
+import { IUser } from '../interfaces/user.interface';
+import { UserRoles } from '../enums/user.enum';
 interface AuthenticatedRequest extends Request {
   user?: IUser;
   token?: string;
