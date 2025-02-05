@@ -30,7 +30,7 @@
 	},
 	"include": [
 		"src/**/*",
-		"index.ts"
+		"index.js"
 	],
 	"exclude": [
 		"node_modules"
