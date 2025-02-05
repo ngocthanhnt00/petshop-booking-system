@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "npx nodemon",
 		"build": "rimraf ./dist && tsc && tsc-alias",
-		"start": "node dist/index.js",
+		"start": "tsx index.ts",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"prettier": "prettier --check .",
