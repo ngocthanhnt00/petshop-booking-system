@@ -1,9 +1,7 @@
 'use client';
-
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 
 export default function Header() {
@@ -36,14 +34,9 @@ export default function Header() {
         </nav>
 
         {/* Mobile Menu Button */}
-        <Button
-          variant="outline"
-          size="icon"
-          className="md:hidden"
-          onClick={() => setIsOpen(!isOpen)}
-        >
+        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
           <Menu size={24} />
-        </Button>
+        </button>
       </div>
 
       {/* Mobile Menu Dropdown */}
