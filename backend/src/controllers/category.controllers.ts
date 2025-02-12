@@ -20,6 +20,23 @@ export const getAllCategory = async (req: Request, res: Response): Promise<void>
   }
 };
 
+export const getCategoryById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const category = await categoryModel.findById(id);
+    if (!category) {
+      res.status(404).json({ message: 'Không tìm thấy danh mục' });
+      return;
+    }
+    res.status(200).json({ message: 'Lấy danh mục thành công', category });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(`Error category up: ${error.message}`);
+    } else {
+      console.error('Error category up:', error);
+    }
+  }
+};
 export const insertCategory = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, description } = req.body;

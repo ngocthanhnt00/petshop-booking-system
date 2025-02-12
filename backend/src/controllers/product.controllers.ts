@@ -16,7 +16,19 @@ export const getAllProduct = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
-
+export const getProductById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const product = await productModel.findById(id).populate('category_id');
+    if (!product) {
+      res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+      return;
+    }
+    res.status(200).json({ message: 'Lấy sản phẩm thành công', product });
+  } catch (error) {
+    res.status(500).json({ message: 'Error getting product', error });
+  }
+};
 export const insertProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, description, price, category_id, image_url, brand_id, status } = req.body;
