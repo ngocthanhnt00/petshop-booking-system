@@ -57,18 +57,23 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
   try {
     const { id } = req.params;
     console.log(id, 'ID');
-    const { name, description, price, category_id, image_url, brand_id } = req.body;
+    const { name, description, price, category_id, image_url, brand_id, status } = req.body;
 
-    if (!name || !description || !price || !category_id || !image_url || !brand_id) {
+    if (!name || !description || !price || !category_id || !image_url || !brand_id || !status) {
       res.status(400).json({
         success: false,
         message: 'Vui lòng cung cấp đầy đủ các trường của sản phẩm'
       });
+      return;
+    }
+    if (!Object.values(ProductStatus).includes(status as ProductStatus)) {
+      res.status(400).json({ success: false, message: 'Trạng thái sản phẩm không hợp lệ' });
+      return;
     }
 
     const updatedProduct = await productModel.findByIdAndUpdate(
       id,
-      { name, description, price, category_id, image_url, brand_id },
+      { name, description, price, category_id, image_url, brand_id, status },
       { new: true, runValidators: true }
     );
 

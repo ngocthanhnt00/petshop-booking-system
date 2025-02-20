@@ -14,6 +14,6 @@ productRouter.get('/products', getAllProduct);
 productRouter.get('/products/:id', getProductById);
 productRouter.post('/products', protectRoute, requireAdmin, insertProduct);
 productRouter.patch('/products/:id', protectRoute, requireAdmin, updateProduct);
-productRouter.delete('/products/:id', protectRoute, requireAdmin, toggleProduct);
+// productRouter.delete('/products/:id', protectRoute, requireAdmin, toggleProduct);
 
 export default productRouter;
