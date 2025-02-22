@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import bcryptjs from 'bcryptjs';
+import crypto from'crypto';
+import sendEmail from '../utils/sendEmail';
 import userModel from '../models/user.model'; // Adjust the path according to your project structure
 import { generateTokenAndSetCookie } from '../utils/generateToken.js'; // Adjust the path according to your project structure
 
@@ -125,5 +127,48 @@ export const authCheckController = async (
       console.log('Error in authCheck controller', error);
     }
     res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const forgotPasswordController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      res.status(400).json({ success: false, message: 'Please provide an email' });
+      return;
+    }
+
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User with this email does not exist' });
+      return;
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    const resetPasswordExpire = Date.now() + 3 * 60 * 1000; // **3 phút**
+
+    user.resetPasswordToken = resetPasswordToken;
+    user.resetPasswordExpire = resetPasswordExpire;
+    await user.save();
+
+    const resetUrl = `${req.protocol}://${req.get('host')}/passwordreset/${resetToken}`;
+    const message = `You requested a password reset. Click the link below (valid for 3 minutes):\n\n${resetUrl}`;
+
+    // Gửi email
+    try {
+      await sendEmail(user.email, 'Password Reset Token', message, '');
+
+      res.status(200).json({ success: true, message: 'Email sent' });
+    } catch (error) {
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save();
+
+      res.status(500).json({ success: false, message: 'Email could not be sent' });
+    }
+  } catch (error) {
+    console.error(`Error in forgotPasswordController: ${error}`);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };

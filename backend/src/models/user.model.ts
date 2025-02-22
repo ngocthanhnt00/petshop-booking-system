@@ -33,7 +33,13 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
     },
     avatar_url: {
       type: String
-    }
+    },
+	reset_password_token:{
+		type: String
+	},
+	reset_password_expires:{
+		type: Date
+	}
   },
   { timestamps: true }
 );
