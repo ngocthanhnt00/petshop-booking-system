@@ -6,6 +6,9 @@ export const connectDB = async () => {
     if (!ENV_VARS.MONGODB_URI) {
       throw new Error('MONGODB_URI is not defined');
     }
+
+    mongoose.set('strictQuery', false); // Thêm dòng này để tắt cảnh báo
+
     const conn = await mongoose.connect(ENV_VARS.MONGODB_URI);
     console.log(`Kết nối thành công: ${conn.connection.host}`);
   } catch (error) {

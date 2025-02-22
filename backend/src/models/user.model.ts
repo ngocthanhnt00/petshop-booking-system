@@ -31,15 +31,17 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       type: String,
       default: UserRoles.USER
     },
-    avatar_url: {
+    avatar: {
       type: String
     },
-	reset_password_token:{
-		type: String
-	},
-	reset_password_expires:{
-		type: Date
-	}
+    reset_password_token: {
+      type: String,
+      default: ''
+    },
+    reset_password_expires: {
+      type: Date,
+      default: null
+    }
   },
   { timestamps: true }
 );
