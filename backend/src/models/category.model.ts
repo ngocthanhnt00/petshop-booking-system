@@ -1,5 +1,6 @@
 import mongoose, { Schema, model } from 'mongoose';
 import { ICategory } from '../interfaces/category.interface';
+import { CategoryStatus } from '../enums/category.enum';
 
 const categorySchema: Schema<ICategory> = new Schema<ICategory>({
   name: {
@@ -10,9 +11,10 @@ const categorySchema: Schema<ICategory> = new Schema<ICategory>({
     type: String,
     default: ''
   },
-  is_hidden: {
-    type: Boolean,
-    default: false
+  status: {
+    type: String,
+    enum: CategoryStatus,
+    default: CategoryStatus.ACTIVE
   }
 });
 

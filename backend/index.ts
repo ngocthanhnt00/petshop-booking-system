@@ -4,12 +4,13 @@ import cors from 'cors';
 import logger from 'morgan';
 import ENV_VARS from './src/config.js';
 import { connectDB } from './src/database/db.js';
-
 import authRouter from './src/routes/auth.routes.js';
 import categoryRouter from './src/routes/category.routes.js';
 import productRouter from './src/routes/product.routes.js';
 import userRouter from './src/routes/user.routes.js';
+
 const app = express();
+
 const PORT = ENV_VARS.PORT;
 
 const corsOptions = {
