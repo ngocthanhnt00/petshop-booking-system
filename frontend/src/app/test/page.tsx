@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 import { DatePicker } from 'antd';
 
 const Test = () => {
-    return <DatePicker />;
-}
+  return <DatePicker />;
+};
 
-export default Test
+export default Test;

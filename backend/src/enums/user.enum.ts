@@ -12,6 +12,6 @@ export enum UserSex {
 }
 
 export enum UserStatus {
-  ACTIVE = 'Hoạt động',
-  INACTIVE = 'Không hoạt động'
+  ACTIVE = 'hoạt động',
+  INACTIVE = 'không hoạt động'
 }

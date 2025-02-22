@@ -10,9 +10,9 @@ export interface IUser {
   address: string;
   status: UserStatus;
   role: UserRoles;
-  avatar_url: string;
+  avatar: string;
+  reset_password_token: string;
+  reset_password_expires: Date;
   createdAt: Date;
   updatedAt: Date;
-	reset_password_token?: string;
-  reset_password_expires?: Date;
 }

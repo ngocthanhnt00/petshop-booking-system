@@ -4,8 +4,8 @@ import {
   loginController,
   logoutController,
   authCheckController,
-	forgotPasswordController,
-	
+  forgotPasswordController,
+  resetPasswordController
 } from '../controllers/auth.controllers.js';
 import { protectRoute } from '../middlewares/protectRoute.js';
 
@@ -16,5 +16,6 @@ authRouter.post('/login', loginController);
 authRouter.post('/logout', logoutController);
 authRouter.get('/authCheck', protectRoute, authCheckController);
 authRouter.post('/forgotPassword', forgotPasswordController);
+authRouter.post('/resetPassword', resetPasswordController);
 
 export default authRouter;

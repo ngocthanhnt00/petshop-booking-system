@@ -7,8 +7,8 @@ const sendEmail = async (to: string, subject: string, text: string, html: string
       service: 'gmail',
       auth: {
         user: ENV_VARS.EMAIL_USER,
-        pass: ENV_VARS.EMAIL_PASS,
-      },
+        pass: ENV_VARS.EMAIL_PASS
+      }
     });
 
     const mailOptions = {
@@ -16,7 +16,7 @@ const sendEmail = async (to: string, subject: string, text: string, html: string
       to,
       subject,
       text,
-      html,
+      html
     };
 
     const info = await transporter.sendMail(mailOptions);
