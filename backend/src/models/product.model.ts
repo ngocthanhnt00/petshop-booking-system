@@ -2,7 +2,7 @@ import mongoose, { Schema, model } from 'mongoose';
 import category from './category.model.js';
 import { ProductStatus } from '../enums/product.enum.js';
 import { IProduct } from '../interfaces/product.interface.js';
-
+import brand from './brand.model.js';
 const productSchema: Schema<IProduct> = new Schema<IProduct>(
   {
     name: {
@@ -20,14 +20,16 @@ const productSchema: Schema<IProduct> = new Schema<IProduct>(
     category_id: {
       type: Schema.Types.ObjectId,
       ref: category,
-      autopopulate: true, // .populate allow to access data of Object references
+      autoPopulate: true, // .populate allow to access data of Object references
       required: [true, 'category_id is required']
     },
     image_url: {
       type: String
     },
     brand_id: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: brand,
+      autoPopulate: true,
       required: [true, 'brand_id is required']
     },
     status: {

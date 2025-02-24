@@ -3,7 +3,7 @@ import userModel from '../models/user.model';
 
 export const getAllUser = async (req: Request, res: Response) => {
   try {
-    const result = await userModel.find();
+    const result = await userModel.find().select('-password');
     res.status(200).json({ success: true, result });
   } catch (error) {
     if (error instanceof Error) {
@@ -19,9 +19,9 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     console.log(id, 'ID');
-    const { email, fullname, phone_number, address, role, avatar_url } = req.body;
+    const { email, fullname, phone_number, address, role, avatar } = req.body;
 
-    if (!email || !fullname || !phone_number || !address || !role || !avatar_url) {
+    if (!email || !fullname || !phone_number || !address || !role || !avatar) {
       res.status(400).json({
         success: false,
         message: 'Vui lòng cung cấp đầy đủ thông tin người dùng'
@@ -29,7 +29,7 @@ export const updateUser = async (req: Request, res: Response) => {
     }
     const updatedUser = await userModel.findByIdAndUpdate(
       id,
-      { email, fullname, phone_number, address, role, avatar_url },
+      { email, fullname, phone_number, address, role, avatar },
       { new: true, runValidators: true }
     );
     if (!updatedUser) {

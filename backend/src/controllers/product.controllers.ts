@@ -5,7 +5,7 @@ import { ProductStatus, ProductStatusMapping } from '../enums/product.enum';
 
 export const getAllProduct = async (req: Request, res: Response): Promise<void> => {
   try {
-    const result = await productModel.find().populate('category_id');
+    const result = await productModel.find().populate('category_id').populate('brand_id');
     res.status(200).json({ success: true, result });
   } catch (error) {
     if (error instanceof Error) {
