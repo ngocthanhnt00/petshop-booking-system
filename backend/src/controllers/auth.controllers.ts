@@ -3,7 +3,8 @@ import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
 import sendEmail from '../utils/sendEmail';
 import userModel from '../models/user.model'; // Adjust the path according to your project structure
-import { generateTokenAndSetCookie } from '../utils/generateToken.js'; // Adjust the path according to your project structure
+import { generateAccessToken, generateRefreshToken } from '../utils/jwt.js'; // Adjust the path according to your project structure
+import ENV_VARS from '../config';
 
 export const signupController = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -63,7 +64,7 @@ export const signupController = async (req: Request, res: Response): Promise<voi
     });
 
     await newUser.save();
-    generateTokenAndSetCookie(newUser._id, res);
+    generateAccessToken(newUser._id, res);
 
     res.status(201).json({
       success: true,
@@ -96,8 +97,16 @@ export const loginController = async (req: Request, res: Response): Promise<void
       return;
     }
 
-    generateTokenAndSetCookie(user._id, res);
-    res.status(200).json({ success: true, user: { ...user._doc, password: '' } });
+    const accessToken = await generateAccessToken(user._id, res);
+    const refreshToken = await generateRefreshToken(user._id, res);
+    await userModel.findByIdAndUpdate(user._id, { refreshToken }, { new: true });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: ENV_VARS.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+    res.status(200).json({ success: true, user: { ...user._doc, password: '' }, accessToken });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
