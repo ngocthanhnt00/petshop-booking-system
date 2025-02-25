@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
+import { CookieOptions, Request, Response } from 'express';
 import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 import sendEmail from '../utils/sendEmail';
 import userModel from '../models/user.model'; // Adjust the path according to your project structure
 import { generateAccessToken, generateRefreshToken } from '../utils/jwt.js'; // Adjust the path according to your project structure
@@ -15,7 +16,6 @@ export const signupController = async (req: Request, res: Response): Promise<voi
         message: 'Please provide an email, password and fullname'
       });
     }
-
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regexEmail.test(email)) {
       res.status(400).json({ success: false, message: 'Please provide a valid email' });
@@ -85,7 +85,9 @@ export const loginController = async (req: Request, res: Response): Promise<void
     const { email, password } = req.body;
     console.log('Email', email);
     console.log('Password', password);
-    const user = await userModel.findOne({ email });
+    const user = await userModel
+      .findOne({ email })
+      .select('-reset_password_token -reset_password_expires -refreshToken -role');
     if (!user) {
       res.status(404).json({ success: false, message: 'user is not defined' });
       return;
@@ -96,6 +98,7 @@ export const loginController = async (req: Request, res: Response): Promise<void
       res.status(401).json({ success: false, message: 'Invalid email and password' });
       return;
     }
+    const { password: pass, ...userData } = user.toObject();
 
     const accessToken = await generateAccessToken(user._id, res);
     const refreshToken = await generateRefreshToken(user._id, res);
@@ -106,7 +109,7 @@ export const loginController = async (req: Request, res: Response): Promise<void
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
-    res.status(200).json({ success: true, user: { ...user._doc, password: '' }, accessToken });
+    res.status(200).json({ success: true, userData: userData, accessToken });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
@@ -217,6 +220,56 @@ export const resetPasswordController = async (req: Request, res: Response): Prom
     res.status(200).json({ success: true, message: 'Mật khẩu đã được cập nhật thành công' });
   } catch (error) {
     console.error('Error in resetPasswordController:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
+export const refreshTokenController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const cookie = req.cookies as { refreshToken?: string };
+
+    if (!cookie.refreshToken) {
+      res.status(401).json({ success: false, message: 'No refresh token in cookies' });
+      return;
+    }
+
+    if (!ENV_VARS.JWT_SECRET) {
+      console.error('JWT_SECRET is not defined');
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+      return;
+    }
+
+    console.log('Received refresh token:', cookie.refreshToken);
+
+    let decoded;
+    try {
+      decoded = jwt.verify(cookie.refreshToken, ENV_VARS.JWT_SECRET) as jwt.JwtPayload;
+      console.log('Decoded token payload:', decoded);
+    } catch (error) {
+      console.error('JWT Verification Error:', error);
+      res.status(401).json({ success: false, message: 'Invalid refresh token' });
+      return;
+    }
+
+    if (!decoded) {
+      res.status(401).json({ success: false, message: 'Invalid token payload' });
+      return;
+    }
+
+    const user = await userModel.findOne({
+      _id: decoded.userId,
+      refreshToken: cookie.refreshToken
+    });
+
+    if (!user) {
+      res.status(403).json({ success: false, message: 'User not found or token mismatch' });
+      return;
+    }
+
+    const accessToken = await generateAccessToken(user._id, res);
+    res.status(200).json({ success: true, newAccessToken: accessToken });
+  } catch (error) {
+    console.error('Error in refreshTokenController:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };

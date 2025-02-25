@@ -35,7 +35,7 @@ export default function RootLayout({
         {children}
         {/* <NewProduct />
         <SaleProduct />
-        <HotProduct /> */}
+         <HotProduct /> */}
         <Footer />
       </body>
     </html>
