@@ -1,149 +1,202 @@
 'use client';
-import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
-import { Button, Row, Col, Typography, Input, Card } from 'antd';
-const { Title, Text } = Typography;
+import Image from 'next/image';
+import { FaUserEdit, FaCalendarAlt } from 'react-icons/fa';
+import { Card, Button, Typography, Space } from 'antd';
+import { useState, useEffect } from 'react';
 
-const products = [
-  {
-    id: 1,
-    price: '130.000đ',
-    name: 'Thức ăn cho mèo con và mèo mẹ ROYAL CANIN Mother & Babycat',
-    image: 'link_to_image_1.jpg',
-  },
-  {
-    id: 2,
-    price: '150.000đ',
-    name: 'Thức ăn cho chó con và chó mẹ ROYAL CANIN',
-    image: 'link_to_image_2.jpg',
-  },
-  {
-    id: 3,
-    price: '170.000đ',
-    name: 'Thức ăn cho chó con và chó mẹ ROYAL CANIN',
-    image: 'link_to_image_2.jpg',
-  },
-  {
-    id: 4,
-    price: '200.000đ',
-    name: 'Thức ăn cho chó con và chó mẹ ROYAL CANIN',
-    image: 'link_to_image_2.jpg',
-  },
-];
+export default function Home() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-export default function Products() {
+  const images = [
+    '/images/banners/1.png',
+    '/images/banners/2.png',
+    '/images/banners/3.png',
+    '/images/banners/4.png',
+    '/images/banners/5.png',
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex(prevIndex => (prevIndex + 1) % images.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className="mx-auto mb-4 mt-4 w-full max-w-full sm:px-3 md:px-7 lg:px-14 xl:px-[154px]">
+    <>
       {/* Banner */}
-      <div className="flex h-[120px] items-center justify-center bg-[#22A6DF] p-4 text-center">
-        <Title level={1} style={{ color: 'white' }}>
-          Mua sắm cho chó
-        </Title>
+      <div className="mt-4 px-4 sm:px-[40px] lg:px-[154px]">
+        <Image
+          src={images[currentImageIndex]}
+          alt="Banner"
+          width={1420}
+          height={0}
+          className="w-full"
+        />
       </div>
 
-      <Row className="mt-6" style={{ width: '100%' }}>
-        {/* Aside */}
-        <Col xs={24} sm={8} md={6} lg={4} className="hidden lg:block">
-          <Title level={4} className="mb-4">
-            Danh mục sản phẩm
-          </Title>
-          <ul className="cursor-pointer space-y-2 border-b pb-4">
-            <li className="hover:text-[#22A6DF]">Thức ăn</li>
-            <li className="hover:text-[#22A6DF]">Phụ kiện - Đồ chơi</li>
-            <li className="hover:text-[#22A6DF]">Chuồng - Vận chuyển</li>
-            <li className="hover:text-[#22A6DF]">Sức khoẻ - Vệ sinh</li>
-          </ul>
-          <Title level={4} className="mb-4 mt-6">
-            Giá
-          </Title>
-          <Text className="mb-2 block">Chọn khoảng giá (VNĐ):</Text>
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Text className="w-10">Từ:</Text>
-              <Input
-                type="number"
-                placeholder=""
-                className="w-full rounded-md border border-[#EAEAEA] text-center"
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Text className="w-10">Đến:</Text>
-              <Input
-                type="number"
-                placeholder=""
-                className="w-full rounded-md border border-[#EAEAEA] text-center"
-              />
-            </div>
-            <Button className="w-full rounded-md border border-[#EAEAEA] hover:border-[#22A6DF] hover:text-[#22A6DF]">
-              Áp dụng
-            </Button>
+      {/* PetNews */}
+      <div className="bg-white p-4 px-4 sm:p-6 sm:px-[40px] lg:px-[154px]">
+        {/* Danh sách logo thương hiệu */}
+        <div className="mb-4 grid w-full grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <div className="flex items-center justify-center">
+            <Image
+              src="/images/news/royalcanin.png"
+              alt="Royal Canin"
+              width={250}
+              height={100}
+              className="h-auto w-auto"
+            />
           </div>
-        </Col>
-        {/* Main */}
-        <Col className="px-4" xs={24} sm={24} md={24} lg={20}>
-          {/* Sắp xếp */}
-          <div className="flex justify-end border-b pb-2">
-            <div className="space-x-2">
-              <Button
-                className="bg-[#f3f4f6] text-[#686868] hover:bg-[#22A6DF] hover:text-white"
-                type="default"
-              >
-                Mới nhất
-              </Button>
-              <Button
-                icon={<FaArrowUp />}
-                className="bg-[#f3f4f6] text-[#686868] hover:bg-[#22A6DF] hover:text-white"
-                type="default"
-              >
-                Giá tăng dần
-              </Button>
-              <Button
-                icon={<FaArrowDown />}
-                className="bg-[#f3f4f6] text-[#686868] hover:bg-[#22A6DF] hover:text-white"
-                type="default"
-              >
-                Giá giảm dần
-              </Button>
+          <div className="flex items-center justify-center">
+            <Image
+              src="/images/news/kitcat.png"
+              alt="Kit Cat"
+              width={250}
+              height={100}
+              className="h-auto w-auto"
+            />
+          </div>
+          <div className="flex items-center justify-center">
+            <Image
+              src="/images/news/gimcat.png"
+              alt="Gim Cat"
+              width={250}
+              height={100}
+              className="h-auto w-auto"
+            />
+          </div>
+          <div className="flex items-center justify-center">
+            <Image
+              src="/images/news/lapaw.png"
+              alt="LaPaw"
+              width={250}
+              height={100}
+              className="h-auto w-auto"
+            />
+          </div>
+          <div className="flex items-center justify-center">
+            <Image
+              src="/images/news/tropiclean.png"
+              alt="TropiClean"
+              width={250}
+              height={100}
+              className="h-auto w-auto"
+            />
+          </div>
+        </div>
+
+        {/* Phần tin tức */}
+        <div className="rounded-lg border bg-white px-4 py-6 sm:px-8 sm:py-8 md:px-12 md:py-10 lg:px-20 lg:py-12">
+          <div className="mb-6 flex items-center justify-between">
+            <h3 className="text-base font-semibold sm:text-lg">CÓ THỂ BẠN MUỐN BIẾT</h3>
+            <h3 className="cursor-pointer text-xs font-semibold text-gray-500 hover:underline sm:text-sm">
+              Tin tức khác »
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            {/* Ảnh bài viết chính */}
+            <div className="lg:col-span-6">
+              <div className="relative h-[200px] w-full sm:h-[250px] md:h-[300px]">
+                <Image
+                  src="/images/news/concho.png"
+                  alt="Main Article"
+                  fill
+                  className="rounded-lg object-cover"
+                />
+              </div>
+            </div>
+
+            {/* Nội dung bài viết chính */}
+            <div className="flex flex-col lg:col-span-6">
+              <h4 className="mb-2 text-base font-bold sm:text-lg">
+                Lợi ích khi tiêm phòng đầy đủ cho thú cưng
+              </h4>
+
+              <Space size="middle" className="mb-3 flex flex-wrap text-xs text-gray-500 sm:text-sm">
+                <span className="flex items-center gap-2">
+                  <FaUserEdit className="text-[#22A6DF]" />
+                  <span className="flex gap-2">
+                    by <p className="font-bold">Admin</p>
+                  </span>
+                </span>
+                <span className="flex items-center gap-2">
+                  <FaCalendarAlt className="text-[#22A6DF]" />
+                  <span>01/01/2025</span>
+                </span>
+              </Space>
+
+              <p className="mb-4 text-xs text-gray-700 sm:text-sm">
+                Tiêm phòng sẽ giúp thú cưng giữ được thể trạng tốt và khỏe mạnh! Bảo vệ con người
+                khỏi sự lây nhiễm của các bệnh truyền lây giữa động vật và ...
+              </p>
+
+              <button className="self-start rounded border border-[#22A6DF] px-4 py-2 text-xs transition-colors hover:bg-[#22A6DF] hover:text-white sm:text-sm">
+                Đọc thêm »
+              </button>
             </div>
           </div>
 
-          {/* Products */}
-          <Row className="p-4" gutter={[16, 16]}>
-            {products.map(product => (
-              <Col xs={24} sm={12} md={12} lg={6} key={product.id}>
-                <Card
-                  className="flex h-full w-full cursor-pointer flex-col justify-between rounded-lg border border-[#EAEAEA] bg-white"
-                  hoverable
-                >
-                  <div className="mx-auto mb-3 flex items-center justify-center rounded-md">
-                    <img
-                      src={product.image}
-                      alt="Sản phẩm"
-                      className="mx-auto mb-3 rounded-md bg-[#EAEAEA] sm:h-36 sm:max-w-36 lg:h-44 lg:w-44"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-lg font-semibold text-[#22A6DF]">{product.price}</p>
-                    <p className="pt-2 text-center leading-relaxed text-[#686868]">
-                      {product.name}
-                    </p>
-                  </div>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+          {/* Danh sách bài viết liên quan */}
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-2 xl:grid-cols-3">
+            {/* Bài viết liên quan 1 */}
+            <div className="flex items-center gap-4">
+              <div className="relative h-[80px] w-[100px] min-w-[100px] sm:h-[104px] sm:w-[145px] sm:min-w-[145px]">
+                <Image
+                  src="/images/news/concho.png"
+                  alt="Related Article"
+                  fill
+                  className="rounded-lg object-cover"
+                />
+              </div>
+              <div>
+                <p className="w-full text-xs font-medium leading-tight sm:w-48 sm:text-sm">
+                  Lợi ích khi tiêm phòng đầy đủ cho thú cưng
+                </p>
+                <p className="mt-1 text-[10px] text-gray-500 sm:text-xs">01/01/2025</p>
+              </div>
+            </div>
 
-          {/* Pagination */}
-          <div className="mt-4 flex justify-center">
-            <Button className="mx-2" disabled>
-              &lt; Trước
-            </Button>
-            <Button className="mx-2">1</Button>
-            <Button className="mx-2">2</Button>
-            <Button className="mx-2">3</Button>
-            <Button className="mx-2">Tiếp &gt;</Button>
+            {/* Bài viết liên quan 2 */}
+            <div className="flex items-center gap-4">
+              <div className="relative h-[80px] w-[100px] min-w-[100px] sm:h-[104px] sm:w-[145px] sm:min-w-[145px]">
+                <Image
+                  src="/images/news/concho.png"
+                  alt="Related Article"
+                  fill
+                  className="rounded-lg object-cover"
+                />
+              </div>
+              <div>
+                <p className="w-full text-xs font-medium leading-tight sm:w-48 sm:text-sm">
+                  Lợi ích khi tiêm phòng đầy đủ cho thú cưng
+                </p>
+                <p className="mt-1 text-[10px] text-gray-500 sm:text-xs">01/01/2025</p>
+              </div>
+            </div>
+
+            {/* Bài viết liên quan 3 */}
+            <div className="flex items-center gap-4">
+              <div className="relative h-[80px] w-[100px] min-w-[100px] sm:h-[104px] sm:w-[145px] sm:min-w-[145px]">
+                <Image
+                  src="/images/news/concho.png"
+                  alt="Related Article"
+                  fill
+                  className="rounded-lg object-cover"
+                />
+              </div>
+              <div>
+                <p className="w-full text-xs font-medium leading-tight sm:w-48 sm:text-sm">
+                  Lợi ích khi tiêm phòng đầy đủ cho thú cưng
+                </p>
+                <p className="mt-1 text-[10px] text-gray-500 sm:text-xs">01/01/2025</p>
+              </div>
+            </div>
           </div>
-        </Col>
-      </Row>
-    </div>
+        </div>
+      </div>
+    </>
   );
 }
