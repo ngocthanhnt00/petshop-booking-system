@@ -163,34 +163,34 @@ export default function Header() {
 
         {/* Menu 3 */}
         <nav className="flex items-center justify-between bg-white px-4 text-black sm:px-[40px] lg:px-[154px]">
-          <Space className="hidden items-center justify-between py-3 md:flex lg:gap-5 xl:gap-[50px]">
+          <Space className="hidden items-center justify-between py-3 md:flex md:gap-[20px] lg:gap-[27px] xl:gap-[50px]">
             <Link href="/">
-              <Typography.Text className="text-sm font-bold text-[#22A6DF] underline underline-offset-[5px] lg:text-base xl:text-lg">
+              <Typography.Text className="text-sm font-bold text-[#22A6DF] underline underline-offset-[5px] lg:text-sm xl:text-lg">
                 Trang chủ
               </Typography.Text>
             </Link>
             <Dropdown menu={menu} placement="bottomLeft">
-              <Typography.Text className="cursor-pointer text-sm font-bold hover:text-[#22A6DF] lg:text-base xl:text-lg">
+              <Typography.Text className="cursor-pointer text-sm font-bold hover:text-[#22A6DF] lg:text-sm xl:text-lg">
                 Sản phẩm
               </Typography.Text>
             </Dropdown>
             <Link href="#">
-              <Typography.Text className="whitespace-nowrap text-sm font-bold hover:text-[#22A6DF] lg:text-base xl:text-lg">
+              <Typography.Text className="whitespace-nowrap text-sm font-bold hover:text-[#22A6DF] lg:text-sm xl:text-lg">
                 Dịch vụ thú cưng
               </Typography.Text>
             </Link>
             <Link href="#">
-              <Typography.Text className="text-sm font-bold hover:text-[#22A6DF] lg:text-base xl:text-lg">
+              <Typography.Text className="text-sm font-bold hover:text-[#22A6DF] lg:text-sm xl:text-lg">
                 Blog
               </Typography.Text>
             </Link>
             <Link href="#">
-              <Typography.Text className="text-sm font-bold hover:text-[#22A6DF] lg:text-base xl:text-lg">
+              <Typography.Text className="text-sm font-bold hover:text-[#22A6DF] lg:text-sm xl:text-lg">
                 Giới thiệu
               </Typography.Text>
             </Link>
             <Link href="#">
-              <Typography.Text className="text-sm font-bold hover:text-[#22A6DF] lg:text-base xl:text-lg">
+              <Typography.Text className="text-sm font-bold hover:text-[#22A6DF] lg:text-sm xl:text-lg">
                 Liên hệ
               </Typography.Text>
             </Link>
@@ -198,7 +198,7 @@ export default function Header() {
 
           <FaBars className="cursor-pointer md:hidden" onClick={showDrawer} />
 
-          <Space className="whitespace-nowrap text-sm font-bold lg:text-sm xl:text-base">
+          <Space className="whitespace-nowrap text-sm font-bold sm:text-xs lg:text-sm xl:text-base">
             <FaPhoneAlt className="mr-1" />
             24/7 Hỗ trợ: <span className="ml-1 text-[#22A6DF]">0393153129</span>
           </Space>
