@@ -1,8 +1,47 @@
 'use client';
 import { useState } from 'react';
 import { Breadcrumb, Button, Card } from 'antd';
+import { useParams } from 'next/navigation';
+import useSWR from 'swr';
 
 export default function DetailProduct() {
+  const params = useParams();
+  const [currentImage, setCurrentImage] = useState('');
+  const [quantity, setQuantity] = useState(1);
+
+  const fetcher = (url: string) => fetch(url).then(res => res.json());
+  const { data, error } = useSWR(`http://localhost:5000/api/v1/products/${params.id}`, fetcher, {
+    refreshInterval: 15000,
+  });
+
+  // Các hàm xử lý
+  const handleImageClick = (image: string) => {
+    setCurrentImage(image);
+  };
+
+  const handleChange = (event: { target: { value: any } }) => {
+    const value = event.target.value;
+    if (/^\d+$/.test(value)) {
+      setQuantity(Math.max(1, Number(value)));
+    }
+  };
+
+  const handleIncrement = () => {
+    setQuantity(prev => prev + 1);
+  };
+
+  const handleDecrement = () => {
+    setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+  };
+
+  // Loading states
+  if (error) return <div>Lỗi load dữ liệu...</div>;
+  if (!data) return <div>Đang tải...</div>;
+
+  const product = data.product;
+  if (!product) return <div>Không tìm thấy sản phẩm. Vui lòng kiểm tra lại.</div>;
+
+  // Breadcrumb items
   const breadcrumbItems = [
     {
       title: (
@@ -19,78 +58,50 @@ export default function DetailProduct() {
       ),
     },
     {
-      title: <span className="text-[#686868]">Thức ăn cho mèo ROYAL CANIN</span>,
+      title: <span className="text-[#686868]">{product.name}</span>,
     },
   ];
-  const [quantity, setQuantity] = useState(1);
 
-  const handleChange = (event: { target: { value: any } }) => {
-    const value = event.target.value;
-    if (/^\d+$/.test(value)) {
-      setQuantity(Math.max(1, Number(value)));
-    }
-  };
-
-  const handleIncrement = () => {
-    setQuantity(prev => prev + 1);
-  };
-
-  const handleDecrement = () => {
-    setQuantity(prev => (prev > 1 ? prev - 1 : 1));
-  };
   return (
     <div className="text-black">
+      {/* Breadcrumb */}
       <nav className="mx-auto max-w-6xl p-4 text-sm text-[#686868]">
         <Breadcrumb items={breadcrumbItems} />
       </nav>
 
       <div className="mx-auto max-w-6xl p-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {/* Hình ảnh sản phẩm */}
           <div className="flex w-full">
             <div className="flex flex-col space-y-6">
               <img
-                src="https://bizweb.dktcdn.net/100/091/443/products/royal-canin-mother-baby-cat.jpg?v=1555301088897"
+                src={`/images/products/${product.image_url}`}
                 className="w-20 cursor-pointer rounded-lg border border-[#22A6DF]"
+                onClick={() => handleImageClick(product.image_url)} // Cập nhật hình ảnh hiện tại khi click
               />
-              <img
-                src="https://bizweb.dktcdn.net/100/091/443/products/royal-canin-mother-baby-cat.jpg?v=1555301088897"
-                className="w-20 cursor-pointer rounded-lg border border-[#EAEAEA]"
-              />
-              <img
-                src="https://bizweb.dktcdn.net/100/091/443/products/royal-canin-mother-baby-cat.jpg?v=1555301088897"
-                className="w-20 cursor-pointer rounded-lg border border-[#EAEAEA]"
-              />
-              <img
-                src="https://bizweb.dktcdn.net/100/091/443/products/royal-canin-mother-baby-cat.jpg?v=1555301088897"
-                className="w-20 cursor-pointer rounded-lg border border-[#EAEAEA]"
-              />
+              {/* Các hình ảnh khác có thể được hiển thị tương tự */}
             </div>
             <img
-              src="https://bizweb.dktcdn.net/100/091/443/products/royal-canin-mother-baby-cat.jpg?v=1555301088897"
+              src={`/images/products/${product.image_url}`}
               className="ml-10 w-full rounded-lg border border-[#EAEAEA] shadow-md md:w-96"
             />
           </div>
 
+          {/* Thông tin sản phẩm */}
           <div>
-            <h1 className="mb-6 text-2xl font-bold text-gray-800">
-              Thức ăn cho mèo ROYAL CANIN Mother & Babycat
-            </h1>
+            <h1 className="mb-6 text-2xl font-bold text-gray-800">{product.name}</h1>
             <div className="mb-6 mt-2 text-lg font-bold text-[#22A6DF]">
-              100.500₫
-              <span className="ml-2 text-sm text-[#686868] line-through">130.000₫</span>
+              {new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+              }).format(Number(product.price))}
+              <span className="ml-2 text-sm text-[#686868] line-through">{product.oldPrice}</span>
               <span className="ml-2 rounded border border-[#FF0000] px-2 py-1 font-medium text-[#FF0000]">
-                -15%
+                {product.discount}%
               </span>
             </div>
-            <div className="mb-6 mt-4">
-              <span className="font-semibold">Size:</span>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <Button type="default">1kg</Button>
-                <Button type="default">2kg</Button>
-                <Button type="default">4kg</Button>
-              </div>
-            </div>
 
+            {/* Số lượng */}
             <div className="mb-6 mt-4 flex gap-4">
               <span className="font-semibold">Số lượng:</span>
               <div className="flex items-center rounded-lg border">
@@ -108,6 +119,8 @@ export default function DetailProduct() {
                 </Button>
               </div>
             </div>
+
+            {/* Nút thêm vào giỏ hàng và mua ngay */}
             <div className="flex flex-col gap-4 md:flex-row">
               <Button className="rounded-lg bg-[#22A6DF] px-6 py-5 text-white">
                 Thêm vào giỏ hàng
@@ -117,147 +130,111 @@ export default function DetailProduct() {
           </div>
         </div>
 
+        {/* Thông tin chi tiết sản phẩm */}
         <div className="mt-8">
           <h2 className="text-xl font-bold text-gray-800">Thông tin sản phẩm</h2>
-          <p className="mt-2 text-[#686868]">
-            THỨC ĂN CHO MÈO ROYAL CANIN MOTHER & BABY CAT MOTHER & BABY CAT là sản phẩm thức ăn khô
-            dành cho mèo đang mang thai, đang chăm sóc con và mèo con dưới 4 tháng tuổi của Royal
-            Canin, Pháp. Thức ăn mèo MOTHER & BABY CAT là thức ăn phù hợp được thiết kế riêng cho
-            các bé mèo ở sau quá trình cai sữa và ở giai đoạn mới phát triển (0 – 4 tháng). Hạt
-            MOTHER & BABY CAT đặc biệt nhỏ giúp các bé dễ ăn hơn hỗ trợ thói quen nhai thức ăn của
-            các bé. Ở giai đoạn này phát triển này, mèo con rất cần nguồn dưỡng chất đặc biệt dễ
-            tiêu hóa và hấp thu. Babycat là sự kết hợp độc đáo các chất dinh dưỡng hỗ trợ tăng miễn
-            dịch cho mèo con.
-          </p>
+          <p className="mt-2 text-[#686868]">{product.description}</p>
           <ul className="mt-2 list-disc pl-6 text-[#686868]">
-            <li>Mèo mẹ mang thai hoặc cho con bú; mèo con từ 1 đến 4 tháng tuổi</li>
-            <li>
-              Được nghiên cứu dựa trên nhu cầu dinh dưỡng của mèo mẹ đang mang thai và trong quá
-              trình cho con bú. Công thức của ROYAL CANIN MOTHER AND BABYCAT là sự cân bằng tối ưu
-              giữa protein, chất béo và carbohydrate nhằm hỗ trợ ngon miệng và bổ sung chất dinh
-              dưỡng cần thiết.
-            </li>
-            <li>Hỗ trợ sức khỏe hệ thống miễn dịch</li>
-            <li>Duy trì sức khỏe tiêu hóa</li>
-            <li>Đặc biệt cai sữa dễ dàng</li>
-            <li>100% dinh dưỡng cân bằng</li>
-            <li>100% đảm bảo an toàn</li>
+            {product.details?.map((detail: string, index: number) => <li key={index}>{detail}</li>)}
           </ul>
-          <ul className="mt-2 list-disc pl-6 text-[#686868]">
-            <strong className="text-black">Tác dụng chính:</strong>
-            <li>Tăng cường sức đề kháng</li>
-            <li>Hỗ trợ trong việc cai sữa</li>
-            <li>Kích thích tiêu hóa</li>
-          </ul>
-          <ul className="mt-2 list-disc pl-6 text-[#686868]">
-            <strong className="text-black">Thành phần:</strong>
-            <li>
-              Protein gia cầm, chất béo động vật, bột bắp, gạo, protein thực vật*, protein động vật,
-              men, dầu cá, củ cải đường, xơ thực vật, dầu đậu nành, khoáng chất,
-              fructo-oligo-sacarit (0,35%), men thủy phân (nguồn manno-oligo-sacarit), chiết xuất
-              men (nguồn betaglucan), chiết xuất cúc vạn thọ (nguồn lutein).
-            </li>
-            <li>
-              Phụ gia dinh dưỡng: Vitamin A, Vitamin D3, Vitamin E, E1 (Sắt), E2 (I ốt), E4 (Đồng),
-              E5 (Mangan), E6 (Kẽm), E8 (Selen)
-            </li>
-            <li>Phụ gia kỹ thuật: Clinoptilolite - Chất chống oxi hóa</li>
-            <li>Trên mỗi kg: DHA: 1,87 g. *L.I.P.: Protein có độ tiêu hóa cao.</li>
-          </ul>
-        </div>
-
-        <div className="mt-8">
-          <h2 className="text-xl font-bold text-gray-800">Đánh giá sản phẩm</h2>
-          <div className="flex justify-between">
-            <div className="mt-2 flex flex-col items-start">
-              <div className="flex text-2xl text-yellow-500">★★★★★</div>
-              <p className="text-sm text-[#686868]">Dựa trên 2 đánh giá</p>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              <Button className="rounded-lg bg-[#22A6DF] px-3 py-1 text-white">Tất cả</Button>
-              <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
-                5 sao (2)
-              </Button>
-              <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
-                4 sao (0)
-              </Button>
-              <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
-                2 sao (0)
-              </Button>
-              <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
-                1 sao (0)
-              </Button>
-              <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
-                3 sao (0)
-              </Button>
-            </div>
-          </div>
-
-          <div className="mt-4 space-y-4">
-            <div className="rounded-lg border p-4 shadow-md">
-              <div className="flex items-center space-x-2">
-                <img
-                  src="https://banner2.cleanpng.com/lnd/20240918/ko/164b0e8db7167fd67eee37afc67faa.webp"
-                  className="h-10 w-10 rounded-full"
-                />
-                <div>
-                  <p className="font-semibold">tinhvan2802</p>
-                  <p className="text-sm text-[#686868]">12-01-2025 15:22</p>
-                </div>
-              </div>
-              <p className="mt-2 text-yellow-500">★★★★★</p>
-              <p className="mt-1 text-black">Mùi hương: thơm, dễ chịu</p>
-            </div>
-
-            <div className="rounded-lg border p-4 shadow-md">
-              <div className="flex items-center space-x-2">
-                <img
-                  src="https://banner2.cleanpng.com/lnd/20240918/ko/164b0e8db7167fd67eee37afc67faa.webp"
-                  className="h-10 w-10 rounded-full"
-                />
-                <div>
-                  <p className="font-semibold">hanhan0610</p>
-                  <p className="text-sm text-[#686868]">12-01-2025 15:22</p>
-                </div>
-              </div>
-              <p className="mt-2 text-yellow-500">★★★★★</p>
-              <p className="mt-1 text-black">
-                Hạt thơm, ngũi rất dễ chịu, shop đa dạng các mặt hàng, sẽ tiếp tục ủng hộ
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-6 flex justify-center space-x-2">
-            <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">
-              ← Trước
-            </Button>
-            <Button className="rounded-lg border border-[#22A6DF] px-3 py-2 text-[#22A6DF]">
-              1
-            </Button>
-            <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">2</Button>
-            <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">3</Button>
-            <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">
-              Tiếp →
-            </Button>
-          </div>
-        </div>
-
-        <div className="mt-8">
-          <h2 className="text-center text-xl font-bold text-gray-800">Sản phẩm liên quan</h2>
-          <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-            {Array(4)
-              .fill(null)
-              .map((_, index) => (
-                <Card key={index} className="rounded-lg border p-2 shadow-md">
-                  <img src="https://picsum.photos/300/200" className="w-full rounded-lg" />
-                  <p className="font-bold text-[#22A6DF]">130.000₫</p>
-                  <p className="mt-2 font-medium text-gray-800">Thức ăn mèo ROYAL CANIN</p>
-                </Card>
-              ))}
-          </div>
         </div>
       </div>
     </div>
   );
 }
+
+// <div className="mt-8">
+//   <h2 className="text-xl font-bold text-gray-800">Đánh giá sản phẩm</h2>
+//   <div className="flex justify-between">
+//     <div className="mt-2 flex flex-col items-start">
+//       <div className="flex text-2xl text-yellow-500">★★★★★</div>
+//       <p className="text-sm text-[#686868]">Dựa trên 2 đánh giá</p>
+//     </div>
+
+//     <div className="flex flex-wrap gap-2">
+//       <Button className="rounded-lg bg-[#22A6DF] px-3 py-1 text-white">Tất cả</Button>
+//       <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
+//         5 sao (2)
+//       </Button>
+//       <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
+//         4 sao (0)
+//       </Button>
+//       <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
+//         2 sao (0)
+//       </Button>
+//       <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
+//         1 sao (0)
+//       </Button>
+//       <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
+//         3 sao (0)
+//       </Button>
+//     </div>
+//   </div>
+
+//   <div className="mt-4 space-y-4">
+//     <div className="rounded-lg border p-4 shadow-md">
+//       <div className="flex items-center space-x-2">
+//         <img
+//           src="https://banner2.cleanpng.com/lnd/20240918/ko/164b0e8db7167fd67eee37afc67faa.webp"
+//           className="h-10 w-10 rounded-full"
+//         />
+//         <div>
+//           <p className="font-semibold">tinhvan2802</p>
+//           <p className="text-sm text-[#686868]">12-01-2025 15:22</p>
+//         </div>
+//       </div>
+//       <p className="mt-2 text-yellow-500">★★★★★</p>
+//       <p className="mt-1 text-black">Mùi hương: thơm, dễ chịu</p>
+//     </div>
+
+//     <div className="rounded-lg border p-4 shadow-md">
+//       <div className="flex items-center space-x-2">
+//         <img
+//           src="https://banner2.cleanpng.com/lnd/20240918/ko/164b0e8db7167fd67eee37afc67faa.webp"
+//           className="h-10 w-10 rounded-full"
+//         />
+//         <div>
+//           <p className="font-semibold">hanhan0610</p>
+//           <p className="text-sm text-[#686868]">12-01-2025 15:22</p>
+//         </div>
+//       </div>
+//       <p className="mt-2 text-yellow-500">★★★★★</p>
+//       <p className="mt-1 text-black">
+//         Hạt thơm, ngũi rất dễ chịu, shop đa dạng các mặt hàng, sẽ tiếp tục ủng hộ
+//       </p>
+//     </div>
+//   </div>
+
+//   <div className="mt-6 flex justify-center space-x-2">
+//     <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">
+//       ← Trước
+//     </Button>
+//     <Button className="rounded-lg border border-[#22A6DF] px-3 py-2 text-[#22A6DF]">
+//       1
+//     </Button>
+//     <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">2</Button>
+//     <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">3</Button>
+//     <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">
+//       Tiếp →
+//     </Button>
+//   </div>
+// </div>
+
+// <div className="mt-8">
+//   <h2 className="text-center text-xl font-bold text-gray-800">Sản phẩm liên quan</h2>
+//   <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+//     {Array(4)
+//       .fill(null)
+//       .map((_, index) => (
+//         <Card key={index} className="rounded-lg border p-2 shadow-md">
+//           <img src="https://picsum.photos/300/200" className="w-full rounded-lg" />
+//           <p className="font-bold text-[#22A6DF]">130.000₫</p>
+//           <p className="mt-2 font-medium text-gray-800">Thức ăn mèo ROYAL CANIN</p>
+//         </Card>
+//       ))}
+//   </div>
+// </div>
+//       </div>
+//     </div>
+//   );
+// }

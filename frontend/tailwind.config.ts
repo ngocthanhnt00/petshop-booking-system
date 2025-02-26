@@ -10,6 +10,11 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: '#22A6DF',
+        text: {
+          DEFAULT: '#1F2937', // Màu chữ thường (gray-800)
+          light: '#686868', // Màu chữ nhạt
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -19,10 +24,6 @@ export default {
         popover: {
           DEFAULT: 'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',
-        },
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',

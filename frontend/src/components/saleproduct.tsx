@@ -4,41 +4,28 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { Button, Card } from 'antd';
 import { useState, useEffect } from 'react';
 
-const products = [
-  {
-    name: 'Thức ăn cho mèo ROYAL CANIN',
-    oldPrice: '130.000₫',
-    newPrice: '100.500₫',
-    salePer: '-15%',
-    image: '/images/products/thucanmeo.png',
-  },
-  {
-    name: 'Hạt dinh dưỡng Whiskas',
-    oldPrice: '125.000₫',
-    newPrice: '95.000₫',
-    salePer: '-20%',
-    image: '/images/products/thucanmeo.png',
-  },
-  {
-    name: 'Thức ăn mèo Me-O',
-    oldPrice: '110.000₫',
-    newPrice: '85.000₫',
-    salePer: '-22%',
-    image: '/images/products/thucanmeo.png',
-  },
-  {
-    name: 'Snack cho mèo Temptations',
-    oldPrice: '90.000₫',
-    newPrice: '70.000₫',
-    salePer: '-18%',
-    image: '/images/products/thucanmeo.png',
-  },
-];
+interface APIProduct {
+  id: string;
+  name: string;
+  image_url: string;
+  price: string;
+  discount: number;
+  salePrice?: string;
+}
 
-export default function SaleProduct() {
+const formatPrice = (amount: number): string => {
+  return amount.toLocaleString('vi-VN') + '₫';
+};
+const parsePrice = (price: string): number => {
+  // Loại bỏ ký tự không phải số (nếu có, ví dụ: "30.000₫" → "30000")
+  return parseInt(price.replace(/[^0-9]/g, ''), 10) || 0;
+};
+
+export default function SaleProduct({ data }: { data: APIProduct[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [visibleProducts, setVisibleProducts] = useState(products);
+  const [visibleProducts, setVisibleProducts] = useState<APIProduct[]>([]);
   const [windowWidth, setWindowWidth] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -50,6 +37,7 @@ export default function SaleProduct() {
   }, []);
 
   useEffect(() => {
+    console.log('Data received in NewProduct:', data);
     const getVisibleCount = () => {
       if (windowWidth >= 1280) return 4; // xl
       if (windowWidth >= 1024) return 3; // lg
@@ -62,30 +50,58 @@ export default function SaleProduct() {
     const end = start + visibleCount;
 
     // Create circular array for infinite scroll
-    let visibleItems = [...products];
-    if (end > products.length) {
-      visibleItems = [...products, ...products.slice(0, end - products.length)];
+    let visibleItems = [...data];
+    if (end > data.length) {
+      visibleItems = [...data, ...data.slice(0, end - data.length)];
     }
 
-    setVisibleProducts(visibleItems.slice(start, end));
-  }, [currentIndex, windowWidth]);
+    // Tính salePrice cho mỗi sản phẩm trong visibleItems
+    const updatedVisibleItems = visibleItems.map(product => {
+      const originalPrice = parsePrice(product.price);
+      const discountedPrice = originalPrice - (originalPrice * product.discount) / 100;
+      return {
+        ...product,
+        salePrice: formatPrice(discountedPrice), // Thêm salePrice vào sản phẩm
+      };
+    });
 
-  const nextSlide = () => {
-    setCurrentIndex(prev => (prev + 1) % products.length);
+    setVisibleProducts(updatedVisibleItems.slice(start, end));
+  }, [currentIndex, windowWidth, data]);
+
+  useEffect(() => {
+    const autoSlide = setInterval(() => {
+      if (!isAnimating) {
+        handleNextSlide();
+      }
+    }, 2000); // Tăng thời gian giữa các lần chuyển slide
+
+    return () => clearInterval(autoSlide);
+  }, [data.length, isAnimating]);
+
+  const handleNextSlide = () => {
+    if (!isAnimating) {
+      setIsAnimating(true);
+      setCurrentIndex(prev => (prev + 1) % data.length);
+      setTimeout(() => setIsAnimating(false), 1000); // Đợi animation hoàn thành
+    }
   };
 
-  const prevSlide = () => {
-    setCurrentIndex(prev => (prev - 1 + products.length) % products.length);
+  const handlePrevSlide = () => {
+    if (!isAnimating) {
+      setIsAnimating(true);
+      setCurrentIndex(prev => (prev - 1 + data.length) % data.length);
+      setTimeout(() => setIsAnimating(false), 1000); // Đợi animation hoàn thành
+    }
   };
 
   return (
-    <div className="relative mt-[30px] rounded-lg p-6 px-4 sm:px-[40px] lg:px-[154px]">
+    <>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="relative ml-[15px] w-[200px] rounded-t-lg border-l border-r border-t border-[#22A6DF] px-2 py-2 sm:ml-[30px] sm:w-[250px] sm:px-4 md:w-[300px]">
           <div className="absolute -top-7 left-3 z-10 bg-white px-2">
             <Image
-              src="/images/products/paw.png"
+              src="/images/icons/paw.png"
               alt="Paw Icon"
               width={50}
               height={50}
@@ -102,48 +118,53 @@ export default function SaleProduct() {
           <Button
             shape="circle"
             icon={<FaChevronLeft />}
-            onClick={prevSlide}
-            className="border-black shadow-md hover:bg-[#22A6DF] hover:text-white"
+            onClick={handlePrevSlide}
+            className="border-black shadow-md transition-colors duration-300 hover:bg-[#22A6DF] hover:text-white"
+            disabled={isAnimating || data.length === 0}
           />
           <Button
             shape="circle"
             icon={<FaChevronRight />}
-            onClick={nextSlide}
-            className="border-black shadow-md hover:bg-[#22A6DF] hover:text-white"
+            onClick={handleNextSlide}
+            className="border-black shadow-md transition-colors duration-300 hover:bg-[#22A6DF] hover:text-white"
+            disabled={isAnimating || data.length === 0}
           />
         </div>
       </div>
 
       {/* Product List */}
-      <div className="rounded-xl border-2 px-2 py-[25px] sm:rounded-3xl sm:border-4 sm:px-4 sm:py-[50px]">
-        <div className="flex gap-4 transition-all duration-300 ease-in-out">
+      <div className="overflow-hidden rounded-xl border-2 px-2 py-[25px] sm:rounded-3xl sm:border-4 sm:px-4 sm:py-[50px]">
+        <div className="flex transform gap-4 transition-all duration-1000 ease-in-out">
           {visibleProducts.map((product, index) => (
             <Card
-              key={`${product.name}-${index}`}
-              className="min-w-0 flex-1 border-none shadow-none"
+              key={`${product.id}-${index}`}
+              className={`min-w-0 flex-1 transform border-none shadow-none transition-all duration-1000 ease-in-out ${isAnimating ? 'scale-95 opacity-80' : 'scale-100 opacity-100'}`}
               styles={{ body: { padding: 0 } }}
             >
               <div className="flex">
                 <div className="w-1/4">
                   <Image
-                    src={product.image}
+                    src={`/images/products/${product.image_url}`}
                     alt={product.name}
                     width={128}
                     height={140}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
                   />
                 </div>
                 <div className="flex w-3/4 flex-col justify-between p-2">
                   <p className="text-xs font-bold sm:text-sm">{product.name}</p>
                   <div className="mt-2 flex items-center gap-2">
                     <p className="text-sm text-gray-400 line-through sm:text-base">
-                      {product.oldPrice}
+                      {new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND',
+                      }).format(Number(product.price))}
                     </p>
                     <p className="text-sm font-bold text-[#22A6DF] sm:text-base">
-                      {product.newPrice}
+                      {product.salePrice}
                     </p>
                     <div className="border border-red-500 px-2 py-1 text-xs font-semibold text-[#FF0000]">
-                      {product.salePer}
+                      {product.discount}%
                     </div>
                   </div>
                   <Button
@@ -158,6 +179,6 @@ export default function SaleProduct() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -3,9 +3,20 @@ import Image from 'next/image';
 import { FaUserEdit, FaCalendarAlt } from 'react-icons/fa';
 import { Card, Button, Typography, Space } from 'antd';
 import { useState, useEffect } from 'react';
+import NewProduct from '@/components/newproduct';
+import SaleProduct from '@/components/saleproduct';
+import HotProduct from '@/components/hotproduct';
+import DogProduct from '@/components/dogproduct';
+import CatProduct from '@/components/catproduct';
+import Link from 'next/link';
 
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [newProduct, setNewProduct] = useState([]);
+  const [saleProduct, setSaleProduct] = useState([]);
+  const [hotProduct, setHotProduct] = useState([]);
+  const [dogProduct, setDogProduct] = useState([]);
+  const [catProduct, setCatProduct] = useState([]);
 
   const images = [
     '/images/banners/1.png',
@@ -23,6 +34,50 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const newProductResponse = await fetch('http://localhost:5000/api/v1/newproducts', {
+          cache: 'no-store',
+        });
+        const newProductData = await newProductResponse.json();
+        console.log('API Data in homepage:', newProductData);
+        setNewProduct(newProductData.products || []);
+
+        const saleProductResponse = await fetch('http://localhost:5000/api/v1/saleproducts', {
+          cache: 'no-store',
+        });
+        const saleProductData = await saleProductResponse.json();
+        console.log('API Data in homepage:', saleProductData);
+        setSaleProduct(saleProductData.products || []);
+
+        const hotProductResponse = await fetch('http://localhost:5000/api/v1/hotproducts', {
+          cache: 'no-store',
+        });
+        const hotProductData = await hotProductResponse.json();
+        console.log('API Data in homepage:', hotProductData);
+        setHotProduct(hotProductData.products || []);
+
+        const dogProductResponse = await fetch('http://localhost:5000/api/v1/dog-products', {
+          cache: 'no-store',
+        });
+        const dogProductData = await dogProductResponse.json();
+        console.log('API Data in homepage:', dogProductData);
+        setDogProduct(dogProductData.products || []);
+
+        const catProductResponse = await fetch('http://localhost:5000/api/v1/cat-products', {
+          cache: 'no-store',
+        });
+        const catProductData = await catProductResponse.json();
+        console.log('API Data in homepage:', catProductData);
+        setCatProduct(catProductData.products || []);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   return (
     <>
       {/* Banner */}
@@ -34,6 +89,56 @@ export default function Home() {
           height={0}
           className="w-full"
         />
+      </div>
+
+      {/* Sản phẩm mới */}
+      <div className="relative mt-[30px] rounded-lg p-6 px-4 sm:px-[40px] lg:px-[154px]">
+        <NewProduct data={newProduct} />
+      </div>
+
+      {/* Sản phẩm giảm giá */}
+      <div className="relative mt-[30px] rounded-lg p-6 px-4 sm:px-[40px] lg:px-[154px]">
+        <SaleProduct data={saleProduct} />
+      </div>
+
+      {/* Sản phẩm bán chạy */}
+      <div className="relative mt-[30px] rounded-lg p-6 px-4 sm:px-[40px] lg:px-[154px]">
+        <HotProduct data={hotProduct} />
+      </div>
+
+      {/* Sản phẩm dành cho chó */}
+      <div className="p-6 px-[154px]">
+        <div className="mx-auto flex h-[50px] w-full max-w-[900px] items-center justify-center rounded-[40px] bg-[#22A6DF] text-base font-medium text-white md:text-lg">
+          MUA SẮM CHO CHÓ
+        </div>
+
+        <DogProduct data={dogProduct} />
+
+        {/* Nút Xem thêm */}
+        <div className="mt-6 text-center">
+          <Link href="/product">
+            <Button className="rounded-md border border-gray-300 px-6 py-5 text-base hover:bg-gray-100">
+              Xem thêm sản phẩm <span className="font-semibold">dành cho chó</span>
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+      {/* Sản phẩm dành cho mèo */}
+      <div className="p-6 px-[154px]">
+        {/* Tiêu đề */}
+        <div className="mx-auto flex h-[50px] w-full max-w-[900px] items-center justify-center rounded-[40px] bg-[#22A6DF] text-base font-medium text-white md:text-lg">
+          MUA SẮM CHO MÈO
+        </div>
+
+        <CatProduct data={catProduct} />
+
+        {/* Nút Xem thêm */}
+        <div className="mt-6 text-center">
+          <Button className="rounded-md border border-gray-300 px-6 py-5 text-base hover:bg-gray-100">
+            Xem thêm sản phẩm <span className="font-semibold">dành cho mèo</span>
+          </Button>
+        </div>
       </div>
 
       {/* PetNews */}
