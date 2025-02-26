@@ -36,6 +36,17 @@ const productSchema: Schema<IProduct> = new Schema<IProduct>(
       type: String,
       enum: ProductStatus,
       default: ProductStatus.AVAILABLE
+    },
+    discount: {
+      type: Number,
+      min: 0,
+      max: 100,
+      default: 0
+    },
+    quantity_sold: {
+      type: Number,
+      min: 0,
+      default: 0
     }
   },
   { timestamps: true }

@@ -1,12 +1,62 @@
 'use client';
-import { useEffect, useState } from 'react';
+
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { FaCheckDouble } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { Button, Row, Col, Typography, Input, Flex } from 'antd';
-import Link from 'next/link';
+
 const { Title, Text } = Typography;
 
 export default function SignUp() {
+  const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    fullname: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    if (formData.password !== formData.confirmPassword) {
+      alert('Mật khẩu xác nhận không khớp!');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullname: formData.fullname,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json(); // Log response từ server
+      console.log('Response:', data);
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Đăng ký thất bại!');
+      }
+
+      alert('Đăng ký thành công!');
+      setFormData({ fullname: '', email: '', password: '', confirmPassword: '' });
+
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
+    } catch (error: any) {
+      console.error('Lỗi:', error);
+      alert(`Đã xảy ra lỗi: ${error.message}`);
+    }
+  };
   return (
     <div className="px-2 py-4 sm:px-5 sm:py-6">
       {/* Title */}
@@ -24,9 +74,9 @@ export default function SignUp() {
 
       <Row
         justify="center"
-        className="mx-auto min-h-[650px] w-full max-w-[830px] flex-col gap-4 overflow-hidden px-2 sm:gap-7 sm:px-0 lg:flex-row"
+        className="mx-auto w-full max-w-[830px] flex-col gap-4 px-2 sm:gap-7 sm:px-0 lg:flex-row"
       >
-        {/* left */}
+        {/* Left */}
         <Col className="flex w-full flex-col justify-between gap-4 sm:gap-0 lg:w-[400px]">
           <div className="h-[200px] sm:h-1/2">
             <img
@@ -35,102 +85,73 @@ export default function SignUp() {
               className="h-full w-full bg-[#EAEAEA] object-cover"
             />
           </div>
-
           <div className="h-auto bg-[#EAEAEA] p-3 text-xs sm:h-1/2 sm:p-4 sm:text-sm">
             <Title level={5} className="text-sm sm:text-base">
               Quyền lợi thành viên
             </Title>
             <ul className="list-disc space-y-2 pl-4 sm:space-y-4">
-              <li className="flex items-center gap-2">
-                <FaCheckDouble className="h-3 w-3 shrink-0 text-[#22A6DF] sm:h-4 sm:w-4" />
-                <span>Mua hàng nhanh chóng, dễ dàng</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <FaCheckDouble className="h-3 w-3 shrink-0 text-[#22A6DF] sm:h-4 sm:w-4" />
-                <span>Theo dõi chi tiết đơn hàng, địa chỉ thanh toán dễ dàng</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <FaCheckDouble className="h-3 w-3 shrink-0 text-[#22A6DF] sm:h-4 sm:w-4" />
-                <span>Nhận nhiều chương trình ưu đãi từ chúng tôi</span>
-              </li>
+              {[
+                'Mua hàng nhanh chóng, dễ dàng',
+                'Theo dõi đơn hàng, địa chỉ thanh toán dễ dàng',
+                'Nhận nhiều ưu đãi',
+              ].map((text, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  <FaCheckDouble className="h-3 w-3 text-[#22A6DF] sm:h-4 sm:w-4" />
+                  <span>{text}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </Col>
-
-        {/* right */}
+        {/* Right */}
         <Col className="flex w-full flex-col justify-between shadow-inner lg:w-[400px]">
           <div>
             <div className="mb-3 flex h-10 sm:h-12">
-              <button className="h-full w-1/2 rounded-none border border-[#686868] text-sm hover:border-[#22A6DF] hover:text-[#22A6DF] sm:text-base">
+              <button
+                onClick={() => router.push('/login')}
+                className="h-full w-1/2 border border-[#686868] text-sm hover:border-[#22A6DF] hover:text-[#22A6DF] sm:text-base"
+              >
                 Đăng Nhập
               </button>
-              <button className="h-full w-1/2 rounded-none border-[#22A6DF] bg-[#22A6DF] text-sm text-white sm:text-base">
-                <Link href="/signup" passHref>
-                  <span className="cursor-pointer">Đăng ký</span>
-                </Link>
+              <button className="h-full w-1/2 border-[#22A6DF] bg-[#22A6DF] text-sm text-white sm:text-base">
+                Đăng ký
               </button>
             </div>
 
             <div className="p-3 sm:p-5">
-              <div className="mb-2 pb-2 text-sm sm:text-base">
-                <label htmlFor="fullname" className="font-bold uppercase">
-                  Họ và Tên <span className="text-red-600">*</span>
-                </label>
-                <Input
-                  type="text"
-                  id="fullname"
-                  placeholder="Nhập họ và tên của bạn"
-                  className="mt-2 h-9 text-sm sm:h-10 sm:text-base"
-                />
-              </div>
-              <div className="mb-2 pb-2 text-sm sm:text-base">
-                <label htmlFor="email" className="font-bold uppercase">
-                  Email <span className="text-red-600">*</span>
-                </label>
-                <Input
-                  type="email"
-                  id="email"
-                  placeholder="Nhập email của bạn"
-                  className="mt-2 h-9 text-sm sm:h-10 sm:text-base"
-                />
-              </div>
-              <div className="mb-2 pb-2 text-sm sm:text-base">
-                <label htmlFor="password" className="font-bold uppercase">
-                  Mật khẩu <span className="text-red-600">*</span>
-                </label>
-                <Input
-                  type="password"
-                  id="password"
-                  placeholder="Nhập mật khẩu của bạn"
-                  className="mt-2 h-9 text-sm sm:h-10 sm:text-base"
-                />
-              </div>
-              <div className="mb-2 pb-2 text-sm sm:text-base">
-                <label htmlFor="confirm-password" className="font-bold uppercase">
-                  Xác nhận mật khẩu <span className="text-red-600">*</span>
-                </label>
-                <Input
-                  type="password"
-                  id="confirm-password"
-                  placeholder="Nhập lại mật khẩu"
-                  className="mt-2 h-9 text-sm sm:h-10 sm:text-base"
-                />
-              </div>
-              <div className="mb-3">
-                <a href="#" className="text-sm sm:text-base">
-                  Quên mật khẩu?
-                </a>
-              </div>
+              {['fullname', 'email', 'password', 'confirmPassword'].map((field, index) => (
+                <div key={index} className="mb-2 pb-2 text-sm sm:text-base">
+                  <label htmlFor={field} className="font-bold uppercase">
+                    {field === 'fullname'
+                      ? 'Họ và Tên'
+                      : field === 'email'
+                        ? 'Email'
+                        : field === 'password'
+                          ? 'Mật khẩu'
+                          : 'Xác nhận mật khẩu'}{' '}
+                    <span className="text-red-600">*</span>
+                  </label>
+                  <Input
+                    type={field.includes('password') ? 'password' : 'text'}
+                    id={field}
+                    placeholder={`Nhập ${field === 'fullname' ? 'họ và tên' : field}`}
+                    value={formData[field as keyof typeof formData]}
+                    onChange={handleChange}
+                    className="mt-2 h-9 text-sm sm:h-10 sm:text-base"
+                  />
+                </div>
+              ))}
             </div>
 
             <div className="flex flex-col items-center px-3 sm:px-5">
               <Flex justify="space-between" className="mb-2 w-full">
-                <button className="h-9 w-[48%] rounded-md bg-black text-xs text-white hover:bg-[#22A6DF] sm:h-10 sm:text-sm">
+                <button
+                  onClick={handleSubmit}
+                  className="h-9 w-[48%] rounded-md bg-black text-xs text-white hover:bg-[#22A6DF] sm:h-10 sm:text-sm"
+                >
                   Tạo tài khoản
                 </button>
-
                 <span className="my-auto px-1 text-sm sm:text-base">Hoặc</span>
-
                 <Button
                   type="default"
                   icon={<FcGoogle className="h-6 w-6 sm:h-8 sm:w-8" />}
@@ -143,8 +164,7 @@ export default function SignUp() {
 
             <div className="px-3 pt-3 text-center sm:px-5 sm:pt-5">
               <Text type="secondary" className="text-[10px] sm:text-xs">
-                Pet Heaven cam kết bảo mật và sẽ không tiết lộ thông tin khách hàng khi không có sự
-                cho phép.
+                Pet Heaven cam kết bảo mật thông tin khách hàng.
               </Text>
             </div>
           </div>

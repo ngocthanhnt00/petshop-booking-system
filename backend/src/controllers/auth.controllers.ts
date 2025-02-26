@@ -116,7 +116,7 @@ export const loginController = async (req: Request, res: Response): Promise<void
 };
 export const logoutController = async (req: Request, res: Response): Promise<void> => {
   try {
-    res.clearCookie('token');
+    res.clearCookie('refreshToken');
     res.status(200).json({ success: true, message: 'Logged out successfully' });
   } catch (error) {
     if (error instanceof Error) {
