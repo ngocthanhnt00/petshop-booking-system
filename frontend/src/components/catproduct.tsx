@@ -26,7 +26,7 @@ export default function CatProduct(pros: { data: APIProduct[] }) {
               alt={product.name}
               width={150}
               height={150}
-              className="relative mx-auto h-32 w-32 md:h-[150px] md:w-[150px]"
+              className="relative mx-auto h-32 w-32 md:h-[150px] md:w-[150px] object-cover transition-transform duration-500 hover:scale-125"
             />
 
             {/* Nút tim & cart */}

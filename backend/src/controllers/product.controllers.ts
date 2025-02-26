@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import productModel from '../models/product.model';
 import { ProductStatus, ProductStatusMapping } from '../enums/product.enum';
+import categoryModel from '../models/category.model';
 
 export const getAllProduct = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -126,5 +127,132 @@ export const toggleProduct = async (req: Request, res: Response): Promise<void> 
     });
   } catch (error) {
     res.status(500).json({ message: 'Lỗi khi cập nhật trạng thái sản phẩm', error });
+  }
+};
+
+export const getNewProduct = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await productModel
+      .find()
+      .sort({ updatedAt: -1 })
+      .limit(10)
+      .populate('category_id')
+      .populate('brand_id');
+
+    if (!result || result.length === 0) {
+      res.status(404).json({ success: false, message: 'Không tìm thấy sản phẩm mới' });
+      return;
+    }
+    res.status(200).json({ success: true, message: 'Lấy sản phẩm mới thành công', products: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Lỗi khi lấy sản phẩm mới', error });
+  }
+};
+
+export const getSaleProduct = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await productModel
+      .find({ discount: { $gt: 0 } })
+      .populate('category_id')
+      .populate('brand_id')
+      .limit(10);
+    if (!result || result.length === 0) {
+      res.status(404).json({ success: false, message: 'Không tìm thấy sản phẩm giảm giá' });
+      return;
+    }
+    res.status(200).json({ success: true, message: 'Lấy sản phẩm giảm giá thành công', products: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Lỗi khi lấy sản phẩm giảm giá', error });
+  }
+};
+
+export const getHotProduct = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await productModel
+      .find()
+      .sort({ quantity_sold: -1 })
+      .limit(10)
+      .populate('category_id')
+      .populate('brand_id');
+
+    if (!result || result.length === 0) {
+      res.status(404).json({ success: false, message: 'Không tìm thấy sản phẩm bán chạy' });
+      return;
+    }
+    res.status(200).json({ success: true, message: 'Lấy sản phẩm bán chạy thành công', products: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Lỗi khi lấy sản phẩm bán chạy', error });
+  }
+};
+
+// Lấy sản phẩm dành cho chó
+export const getDogProducts = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Tìm category có category_name là "Chó"
+    const dogCategory = await categoryModel.findOne({ category_name: 'Chó' });
+    if (!dogCategory) {
+      res.status(404).json({ success: false, message: 'Không tìm thấy danh mục sản phẩm cho chó' });
+      return;
+    }
+
+    // Tìm tất cả sản phẩm có category_id trùng với id của category Chó
+    const result = await productModel
+      .find({ category_id: dogCategory._id })
+      .limit(8)
+      .populate('category_id')
+      .populate('brand_id');
+
+    if (!result || result.length === 0) {
+      res.status(404).json({ success: false, message: 'Không tìm thấy sản phẩm dành cho chó' });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Lấy sản phẩm dành cho chó thành công',
+      products: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi lấy sản phẩm dành cho chó',
+      error
+    });
+  }
+};
+
+// Lấy sản phẩm dành cho mèo
+export const getCatProducts = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Tìm category có category_name là "Mèo"
+    const catCategory = await categoryModel.findOne({ category_name: 'Mèo' });
+    if (!catCategory) {
+      res.status(404).json({ success: false, message: 'Không tìm thấy danh mục sản phẩm cho mèo' });
+      return;
+    }
+
+    // Tìm tất cả sản phẩm có category_id trùng với id của category Mèo
+    const result = await productModel
+      .find({ category_id: catCategory._id })
+      .limit(8)
+      .populate('category_id')
+      .populate('brand_id');
+
+    if (!result || result.length === 0) {
+      res.status(404).json({ success: false, message: 'Không tìm thấy sản phẩm dành cho mèo' });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Lấy sản phẩm dành cho mèo thành công',
+      products: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi lấy sản phẩm dành cho mèo',
+      error
+    });
   }
 };
