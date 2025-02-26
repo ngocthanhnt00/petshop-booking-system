@@ -14,4 +14,6 @@ export interface IProduct {
   createdAt: Date;
   updatedAt: Date;
   status: ProductStatus;
+  discount: number;
+  quantity_sold: number;
 }

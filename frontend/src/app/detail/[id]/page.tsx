@@ -1,6 +1,6 @@
 'use client';
-import { useState } from 'react';
-import { Breadcrumb, Button, Card } from 'antd';
+import { SetStateAction, useState } from 'react';
+import { Breadcrumb, Button } from 'antd';
 import { useParams } from 'next/navigation';
 import useSWR from 'swr';
 
@@ -9,13 +9,13 @@ export default function DetailProduct() {
   const [currentImage, setCurrentImage] = useState('');
   const [quantity, setQuantity] = useState(1);
 
-  const fetcher = (url: string) => fetch(url).then(res => res.json());
+  const fetcher = (url: string | URL | Request) => fetch(url).then(res => res.json());
   const { data, error } = useSWR(`http://localhost:5000/api/v1/products/${params.id}`, fetcher, {
     refreshInterval: 15000,
   });
 
-  // Các hàm xử lý
-  const handleImageClick = (image: string) => {
+  // Handling functions
+  const handleImageClick = (image: SetStateAction<string>) => {
     setCurrentImage(image);
   };
 
@@ -74,15 +74,38 @@ export default function DetailProduct() {
           {/* Hình ảnh sản phẩm */}
           <div className="flex w-full">
             <div className="flex flex-col space-y-6">
-              <img
-                src={`/images/products/${product.image_url}`}
-                className="w-20 cursor-pointer rounded-lg border border-[#22A6DF]"
-                onClick={() => handleImageClick(product.image_url)} // Cập nhật hình ảnh hiện tại khi click
-              />
-              {/* Các hình ảnh khác có thể được hiển thị tương tự */}
+              {/* Render detail images */}
+              {product.detail1 && (
+                <img
+                  src={`/images/products/${product.detail1}`}
+                  className="w-20 cursor-pointer rounded-lg border border-[#22A6DF]"
+                  onClick={() => handleImageClick(product.detail1)}
+                />
+              )}
+              {product.detail2 && (
+                <img
+                  src={`/images/products/${product.detail2}`}
+                  className="w-20 cursor-pointer rounded-lg border border-[#EAEAEA]"
+                  onClick={() => handleImageClick(product.detail2)}
+                />
+              )}
+              {product.detail3 && (
+                <img
+                  src={`/images/products/${product.detail3}`}
+                  className="w-20 cursor-pointer rounded-lg border border-[#EAEAEA]"
+                  onClick={() => handleImageClick(product.detail3)}
+                />
+              )}
+              {product.detail4 && (
+                <img
+                  src={`/images/products/${product.detail4}`}
+                  className="w-20 cursor-pointer rounded-lg border border-[#EAEAEA]"
+                  onClick={() => handleImageClick(product.detail4)}
+                />
+              )}
             </div>
             <img
-              src={`/images/products/${product.image_url}`}
+              src={currentImage || `/images/products/${product.image_url}`}
               className="ml-10 w-full rounded-lg border border-[#EAEAEA] shadow-md md:w-96"
             />
           </div>
@@ -142,7 +165,6 @@ export default function DetailProduct() {
     </div>
   );
 }
-
 // <div className="mt-8">
 //   <h2 className="text-xl font-bold text-gray-800">Đánh giá sản phẩm</h2>
 //   <div className="flex justify-between">
