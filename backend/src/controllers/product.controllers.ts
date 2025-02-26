@@ -254,3 +254,14 @@ export const toggleProduct = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ message: 'Lỗi khi cập nhật trạng thái sản phẩm', error });
   }
 };
+export const getProductsByCategoryId = async (categoryId: string): Promise<any> => {
+  try {
+      console.log(categoryId, "checkCategoryId")
+      const products = await productModel.find({ category_id: categoryId });
+      return products;
+  } catch (error) {
+      console.log("Error fetching products by categoryId:", error);
+      throw error;
+  }
+}
+

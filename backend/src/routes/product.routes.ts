@@ -9,7 +9,8 @@ import {
   getSaleProduct,
   getHotProduct,
   getDogProducts,
-  getCatProducts
+  getCatProducts,
+  getProductsByCategoryId
 } from '../controllers/product.controllers';
 import { protectRoute, requireAdmin } from '../middlewares/protectRoute';
 import { get } from 'http';
@@ -23,6 +24,7 @@ productRouter.get('/saleproducts', getSaleProduct);
 productRouter.get('/hotproducts', getHotProduct);
 productRouter.get('/dog-products', getDogProducts);
 productRouter.get('/cat-products', getCatProducts);
+productRouter.get('/products/category/:categoryId', getProductsByCategoryId)
 productRouter.post('/products', verifyToken, requireAdmin, insertProduct);
 productRouter.patch('/products/:id', verifyToken, requireAdmin, updateProduct);
 // productRouter.delete('/products/:id', protectRoute, requireAdmin, toggleProduct);
