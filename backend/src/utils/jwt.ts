@@ -7,7 +7,7 @@ export const generateAccessToken = async (userId: string, res: Response) => {
     throw new Error('JWT_SECRET is not defined');
   }
   const token = jwt.sign({ userId }, ENV_VARS.JWT_SECRET, {
-    expiresIn: '1d'
+    expiresIn: '30s'
   });
   return token;
 };
