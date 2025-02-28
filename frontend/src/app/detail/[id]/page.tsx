@@ -89,48 +89,88 @@ export default function DetailProduct() {
               {/* Render detail images */}
               {product.image_url[0] && (
                 <img
+
                   src={`/images/products/${product.image_url[0]}`}
                   alt="Detail 1"
                   className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
                     selectedImage === product.image_url[0] ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
                   }`}
                   onClick={() => handleImageClick(product.image_url[0])}
+
+                  src={`/images/products/${product.detail1}`}
+                  alt="Detail 1"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.detail1 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
+                  onClick={() => handleImageClick(product.detail1)}
+
                 />
               )}
               {product.image_url[1] && (
                 <img
+
                   src={`/images/products/${product.image_url[1]}`}
                   alt="Detail 2"
                   className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
                     selectedImage === product.image_url[1] ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
                   }`}
                   onClick={() => handleImageClick(product.image_url[1])}
+
+                  src={`/images/products/${product.detail2}`}
+                  alt="Detail 2"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.detail2 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
+                  onClick={() => handleImageClick(product.detail2)}
+
                 />
               )}
               {product.image_url[2] && (
                 <img
+
                   src={`/images/products/${product.image_url[2]}`}
                   alt="Detail 3"
                   className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
                     selectedImage === product.image_url[2] ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
                   }`}
                   onClick={() => handleImageClick(product.image_url[2])}
+
+                  src={`/images/products/${product.detail3}`}
+                  alt="Detail 3"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.detail3 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
+                  onClick={() => handleImageClick(product.detail3)}
+
                 />
               )}
               {product.image_url[3] && (
                 <img
+
                   src={`/images/products/${product.image_url[3]}`}
                   alt="Detail 4"
                   className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
                     selectedImage === product.image_url[3] ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
                   }`}
                   onClick={() => handleImageClick(product.image_url[3])}
+
+                  src={`/images/products/${product.detail4}`}
+                  alt="Detail 4"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.detail4 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
+                  onClick={() => handleImageClick(product.detail4)}
+
                 />
               )}
             </div>
             <div className="ml-10 w-full md:w-96">
               <img
+
                 src={selectedImage ? `/images/products/${selectedImage}` : `/images/products/${product.image_url[0]}`}
+=======
+                src={selectedImage ? `/images/products/${selectedImage}` : `/images/products/${product.image_url}`}
+
                 alt="Main product"
                 className="w-full rounded-lg border border-[#EAEAEA] shadow-md transition-all duration-300"
               />

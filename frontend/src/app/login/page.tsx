@@ -2,13 +2,15 @@
 import { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaCheckDouble } from 'react-icons/fa6';
-<<<<<<< HEAD
+
 import { Button, Row, Col, Typography, Input, Flex } from 'antd';
 import Link from 'next/link';
-=======
+
 import { Button, Row, Col, Typography, Input, Flex, message } from 'antd';
+import { Button, Row, Col, Typography, Input, Flex, notification, Modal } from 'antd';
+import 'antd/dist/reset.css';
+
 import { useRouter } from 'next/navigation';
->>>>>>> 8d8f38b6cac905c4a2075dfdd5c5306517e457db
 const { Title, Text } = Typography;
 
 export default function Login() {
@@ -16,6 +18,12 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState<string>('');
+  const [resetToken, setResetToken] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
 
   const handleLogin = async () => {
     setLoading(true);
@@ -29,19 +37,110 @@ export default function Login() {
       });
 
       const data = await response.json();
-      console.log('Phản hồi từ API:', data);
+      console.log('Phản hồi từ API:', response, data);
 
       if (response.ok) {
-        message.success('Đăng nhập thành công');
+        notification.success({
+          message: 'Đăng nhập thành công!',
+          description: 'Chào mừng bạn quay trở lại!',
+          placement: 'topRight',
+          duration: 2,
+        });
         localStorage.setItem('accessToken', data.accessToken);
-        router.push('/');
+        localStorage.setItem('accountID', JSON.stringify(data.userData._id));
+        localStorage.setItem('userData', JSON.stringify(data.userData));
+        await router.push('/');
       } else {
-        message.error(data.message || 'Đăng nhập thất bại');
+        throw new Error('Đăng nhập thất bại');
       }
-    } catch (error) {
-      message.error('Có lỗi xảy ra, vui lòng thử lại');
+    } catch (error: any) {
+      notification.error({
+        message: 'Đăng nhập thất bại!',
+        description: error.message || 'Có lỗi xảy ra trong quá trình đăng nhập, vui lòng thử lại.',
+        placement: 'topRight',
+        duration: 2,
+      });
     } finally {
       setLoading(false);
+    }
+  };
+  const handleForgotPassword = async () => {
+    if (!forgotEmail) {
+      notification.warning({ message: 'Vui lòng nhập email!', placement: 'topRight', duration: 2 });
+      return;
+    }
+    setIsSending(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/auth/forgotPassword', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        notification.success({
+          message: 'Kiểm tra email!',
+          description: 'Hãy kiểm tra hộp thư của bạn để đặt lại mật khẩu.',
+          placement: 'topRight',
+          duration: 2,
+        });
+        setIsForgotPasswordModalOpen(false);
+        setIsResetPasswordModalOpen(true);
+      } else {
+        throw new Error(data.message || 'Không thể gửi yêu cầu!');
+      }
+    } catch (error: any) {
+      notification.error({
+        message: 'Lỗi!',
+        description: 'Không thể gửi yêu cầu quên mật khẩu.',
+        placement: 'topRight',
+        duration: 2,
+      });
+    } finally {
+      setIsSending(false);
+    }
+  };
+  const handleResetPassword = async () => {
+    if (!resetToken || !newPassword) {
+      notification.warning({
+        message: 'Vui lòng nhập mã xác nhận và mật khẩu mới!',
+        placement: 'topRight',
+        duration: 2,
+      });
+      return;
+    }
+
+    setIsSending(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/auth/resetPassword', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resetToken, newPassword }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        notification.success({
+          message: 'Mật khẩu đã được đặt lại thành công!',
+          placement: 'topRight',
+          duration: 2,
+        });
+        setIsResetPasswordModalOpen(false);
+        setForgotEmail('');
+        setResetToken('');
+        setNewPassword('');
+      } else {
+        throw new Error(data.message || 'Không thể đặt lại mật khẩu!');
+      }
+    } catch (error: any) {
+      notification.error({
+        message: 'Lỗi!',
+        description: error.message,
+        placement: 'topRight',
+        duration: 2,
+      });
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -103,15 +202,13 @@ export default function Login() {
               <button className="h-full w-1/2 rounded-none border-[#22A6DF] bg-[#22A6DF] text-sm text-white sm:text-base">
                 Đăng Nhập
               </button>
-<<<<<<< HEAD
+
               <Link href="/signup">
               <button className="h-full w-1/2 rounded-none border border-[#686868] text-sm hover:border-[#22A6DF] hover:text-[#22A6DF] sm:text-base">
-=======
               <button
                 onClick={() => router.push('/signup')}
                 className="h-full w-1/2 rounded-none border border-[#686868] text-sm hover:border-[#22A6DF] hover:text-[#22A6DF] sm:text-base"
               >
->>>>>>> 8d8f38b6cac905c4a2075dfdd5c5306517e457db
                 Đăng Ký
               </button>
               </Link>
@@ -144,7 +241,10 @@ export default function Login() {
                 />
               </div>
               <div className="mb-3">
-                <a href="#" className="text-sm sm:text-base">
+                <a
+                  className="cursor-pointer text-sm sm:text-base"
+                  onClick={() => setIsForgotPasswordModalOpen(true)}
+                >
                   Quên mật khẩu?
                 </a>
               </div>
@@ -179,6 +279,56 @@ export default function Login() {
           </div>
         </Col>
       </Row>
+      <Modal
+        title="Quên Mật Khẩu"
+        open={isForgotPasswordModalOpen}
+        onCancel={() => setIsForgotPasswordModalOpen(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsForgotPasswordModalOpen(false)}>
+            Hủy
+          </Button>,
+          <Button key="submit" type="primary" loading={isSending} onClick={handleForgotPassword}>
+            Gửi
+          </Button>,
+        ]}
+      >
+        <p>Nhập email của bạn để nhận hướng dẫn đặt lại mật khẩu.</p>
+        <Input
+          type="email"
+          placeholder="Nhập email"
+          value={forgotEmail}
+          onChange={e => setForgotEmail(e.target.value)}
+        />
+      </Modal>
+
+      <Modal
+        title="Đặt Lại Mật Khẩu"
+        open={isResetPasswordModalOpen}
+        onCancel={() => setIsResetPasswordModalOpen(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsResetPasswordModalOpen(false)}>
+            Hủy
+          </Button>,
+          <Button key="submit" type="primary" loading={isSending} onClick={handleResetPassword}>
+            Đặt lại
+          </Button>,
+        ]}
+      >
+        <p>Nhập mã xác nhận và mật khẩu mới của bạn.</p>
+        <Input
+          className="mb-2"
+          type="text"
+          placeholder="Mã xác nhận"
+          value={resetToken}
+          onChange={e => setResetToken(e.target.value)}
+        />
+        <Input
+          type="password"
+          placeholder="Mật khẩu mới"
+          value={newPassword}
+          onChange={e => setNewPassword(e.target.value)}
+        />
+      </Modal>
     </div>
   );
 }
