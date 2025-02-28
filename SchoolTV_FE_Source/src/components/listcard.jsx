@@ -1,28 +1,8 @@
 import { Card, Col, Row } from 'antd';
-import Link from 'next/link';
 import { FaHeart, FaShoppingCart } from 'react-icons/fa';
 import { IoEyeSharp } from 'react-icons/io5';
 
-interface APIProduct {
-  _id: object;
-  image: string | undefined;
-  category: any;
-  id: string | number;
-  name: string;
-  category_id: object;
-  image_url: string;
-  detail1: string;
-  detail2: string;
-  detail3: string;
-  detail4: string;
-  price: string;
-  createdAt: Date;
-  updatedAt: Date;
-  brand_id: object;
-  status: string;
-}
-
-export default function ListCard({ pros }: { pros: { data: APIProduct[] } }) {
+export default function ListCard({ pros }) {
   return (
     <Row className="p-4" gutter={[16, 16]}>
       {pros.data.map((product, index) => (
@@ -45,17 +25,17 @@ export default function ListCard({ pros }: { pros: { data: APIProduct[] } }) {
                   <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#22A6DF] shadow-md transition-all duration-300 hover:scale-110 hover:bg-[#1890ff] hover:shadow-lg active:scale-95">
                     <FaHeart className="text-xl text-white transition-colors hover:text-[#ff4d4f]" />
                   </button>
-                </Link>
+                </a>
                 <a href="#">
                   <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#22A6DF] text-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-[#1890ff] hover:shadow-lg active:scale-95">
                     <FaShoppingCart className="text-xl transition-transform hover:rotate-12" />
                   </button>
-                </Link>
+                </a>
                 <a href={`/detail/${product._id}`}>
                   <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#22A6DF] text-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-[#1890ff] hover:shadow-lg active:scale-95">
                     <IoEyeSharp className="text-xl transition-transform hover:rotate-12" />
                   </button>
-                </Link>
+                </a>
               </div>
             </div>
 

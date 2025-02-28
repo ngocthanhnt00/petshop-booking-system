@@ -77,7 +77,7 @@ export default function NewProduct({ data }: { data: APIProduct[] }) {
       <div className="flex items-center justify-between">
         <div className="relative ml-[15px] w-[200px] rounded-t-lg border-l border-r border-t border-[#22A6DF] px-2 py-2 sm:ml-[30px] sm:w-[250px] sm:px-4 md:w-[300px]">
           <div className="absolute -top-7 left-3 z-10 bg-white px-2">
-            <Image
+            <image
               src="/images/icons/paw.png"
               alt="Paw Icon"
               width={50}
@@ -118,7 +118,7 @@ export default function NewProduct({ data }: { data: APIProduct[] }) {
             >
               <div className="flex">
                 <div className="w-1/4 overflow-hidden">
-                  <Image
+                  <image
                     src={`/images/products/${product.image_url}`}
                     alt={product.name}
                     width={128}
