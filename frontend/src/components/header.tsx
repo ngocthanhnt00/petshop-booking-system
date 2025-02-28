@@ -12,14 +12,22 @@ import {
 } from 'react-icons/fa';
 import { BsGeoAltFill } from 'react-icons/bs';
 import { Search } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+const { Title, Text } = Typography;
 
+interface User {
+  fullname: string;
+}
 export default function Header() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [subMenu, setSubMenu] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const showDrawer = () => setOpen(true);
   const onClose = () => {
@@ -63,6 +71,54 @@ export default function Header() {
 
   const handleBackClick = () => {
     setSubMenu(false);
+  };
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    const accountID = localStorage.getItem('userData._id') || '';
+    console.log('id từ local !!!!!!!', accountID, token);
+    if (!token || !accountID) {
+      console.error('Không tìm thấy token, accountID trong local');
+      return;
+    }
+
+    const storedUserData = localStorage.getItem('userData');
+    if (storedUserData) {
+      setUser(JSON.parse(storedUserData));
+      console.log('User data loaded:', JSON.parse(storedUserData));
+    }
+
+    fetch(`http://localhost:5000/api/v1/users/${accountID}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log('Data', data);
+        setUser(data);
+        localStorage.setItem('userData', JSON.stringify(data));
+      })
+      .catch(err => {
+        console.error('Error fetching user:', err);
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('accountID');
+        localStorage.removeItem('userData');
+      });
+  }, []);
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('accountID');
+    setUser(null);
+    router.push('/');
+  };
+  const toggleDropdown = () => {
+    setShowDropdown(prev => !prev);
+    console.log('Dropdown toggled:', !showDropdown); // Log trạng thái dropdown
   };
 
   return (
@@ -155,9 +211,28 @@ export default function Header() {
                 <FaShoppingCart className="text-2xl" />
               </Badge>
             </Link>
-            <Link href="/login">
-              <Avatar icon={<FaUserAlt />} className="bg-[#22A6DF]" />
-            </Link>
+            {user ? (
+              <div className="user-profile" onClick={toggleDropdown}>
+                <Title level={5} className="text-sm">
+                  {user.fullname}
+                </Title>
+                {showDropdown && (
+                  <div className="profile-dropdown">
+                    <div className="dropdown-divider"></div>
+                    <a href="/userProfile" className="dropdown-item">
+                      <i className="fas fa-user"></i> Tài khoản
+                    </a>
+                    <a href="#" className="dropdown-item" onClick={handleLogout}>
+                      <i className="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link href="/login">
+                <Avatar icon={<FaUserAlt />} className="bg-[#22A6DF]" />
+              </Link>
+            )}
           </Space>
         </div>
 
