@@ -3,6 +3,7 @@ import { SetStateAction, useState } from 'react';
 import { Breadcrumb, Button } from 'antd';
 import { useParams } from 'next/navigation';
 import useSWR from 'swr';
+import Loader from '@/components/loader';
 
 export default function DetailProduct() {
   const params = useParams();
@@ -13,6 +14,20 @@ export default function DetailProduct() {
   const { data, error } = useSWR(`http://localhost:5000/api/v1/products/${params.id}`, fetcher, {
     refreshInterval: 15000,
   });
+
+  console.log('API Data:', data);
+
+  if (error) return (
+    <div className="flex min-h-screen items-center justify-center text-red-500">
+      Lỗi load dữ liệu...
+    </div>
+  );
+  if (!data) return <Loader />;if (error) return (
+    <div className="flex min-h-screen items-center justify-center text-red-500">
+      Lỗi load dữ liệu...
+    </div>
+  );
+  if (!data) return <Loader />;
 
   // Handling functions
   const handleImageClick = (image: string) => {
@@ -34,9 +49,6 @@ export default function DetailProduct() {
     setQuantity(prev => (prev > 1 ? prev - 1 : 1));
   };
 
-  // Loading states
-  if (error) return <div>Lỗi load dữ liệu...</div>;
-  if (!data) return <div>Đang tải...</div>;
 
   const product = data.product;
   if (!product) return <div>Không tìm thấy sản phẩm. Vui lòng kiểm tra lại.</div>;
@@ -75,50 +87,90 @@ export default function DetailProduct() {
           <div className="flex w-full">
             <div className="flex flex-col space-y-6">
               {/* Render detail images */}
-              {product.detail1 && (
+              {product.image_url[0] && (
                 <img
+
+                  src={`/images/products/${product.image_url[0]}`}
+                  alt="Detail 1"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.image_url[0] ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
+                  onClick={() => handleImageClick(product.image_url[0])}
+
                   src={`/images/products/${product.detail1}`}
                   alt="Detail 1"
                   className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
                     selectedImage === product.detail1 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
                   }`}
                   onClick={() => handleImageClick(product.detail1)}
+
                 />
               )}
-              {product.detail2 && (
+              {product.image_url[1] && (
                 <img
+
+                  src={`/images/products/${product.image_url[1]}`}
+                  alt="Detail 2"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.image_url[1] ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
+                  onClick={() => handleImageClick(product.image_url[1])}
+
                   src={`/images/products/${product.detail2}`}
                   alt="Detail 2"
                   className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
                     selectedImage === product.detail2 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
                   }`}
                   onClick={() => handleImageClick(product.detail2)}
+
                 />
               )}
-              {product.detail3 && (
+              {product.image_url[2] && (
                 <img
+
+                  src={`/images/products/${product.image_url[2]}`}
+                  alt="Detail 3"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.image_url[2] ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
+                  onClick={() => handleImageClick(product.image_url[2])}
+
                   src={`/images/products/${product.detail3}`}
                   alt="Detail 3"
                   className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
                     selectedImage === product.detail3 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
                   }`}
                   onClick={() => handleImageClick(product.detail3)}
+
                 />
               )}
-              {product.detail4 && (
+              {product.image_url[3] && (
                 <img
+
+                  src={`/images/products/${product.image_url[3]}`}
+                  alt="Detail 4"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.image_url[3] ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
+                  onClick={() => handleImageClick(product.image_url[3])}
+
                   src={`/images/products/${product.detail4}`}
                   alt="Detail 4"
                   className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
                     selectedImage === product.detail4 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
                   }`}
                   onClick={() => handleImageClick(product.detail4)}
+
                 />
               )}
             </div>
             <div className="ml-10 w-full md:w-96">
               <img
+
+                src={selectedImage ? `/images/products/${selectedImage}` : `/images/products/${product.image_url[0]}`}
+=======
                 src={selectedImage ? `/images/products/${selectedImage}` : `/images/products/${product.image_url}`}
+
                 alt="Main product"
                 className="w-full rounded-lg border border-[#EAEAEA] shadow-md transition-all duration-300"
               />

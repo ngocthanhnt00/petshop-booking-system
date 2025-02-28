@@ -2,8 +2,14 @@
 import { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaCheckDouble } from 'react-icons/fa6';
+
+import { Button, Row, Col, Typography, Input, Flex } from 'antd';
+import Link from 'next/link';
+
+import { Button, Row, Col, Typography, Input, Flex, message } from 'antd';
 import { Button, Row, Col, Typography, Input, Flex, notification, Modal } from 'antd';
 import 'antd/dist/reset.css';
+
 import { useRouter } from 'next/navigation';
 const { Title, Text } = Typography;
 
@@ -196,12 +202,16 @@ export default function Login() {
               <button className="h-full w-1/2 rounded-none border-[#22A6DF] bg-[#22A6DF] text-sm text-white sm:text-base">
                 Đăng Nhập
               </button>
+
+              <Link href="/signup">
+              <button className="h-full w-1/2 rounded-none border border-[#686868] text-sm hover:border-[#22A6DF] hover:text-[#22A6DF] sm:text-base">
               <button
                 onClick={() => router.push('/signup')}
                 className="h-full w-1/2 rounded-none border border-[#686868] text-sm hover:border-[#22A6DF] hover:text-[#22A6DF] sm:text-base"
               >
                 Đăng Ký
               </button>
+              </Link>
             </div>
             <div className="p-3 sm:p-5">
               <div className="mb-2 pb-2 text-sm sm:text-base">

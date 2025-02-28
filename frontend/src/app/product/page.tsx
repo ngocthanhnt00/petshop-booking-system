@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { FaFilter } from 'react-icons/fa';
 import { Button, Row, Col, Typography, Select, Drawer, Checkbox, Pagination } from 'antd';
 import ListCard from '@/components/listcard';
+import Loader from '@/components/loader';
 
 const { Title } = Typography;
 const { Option } = Select;
 
 interface APIProduct {
+  _id: object;
   category: string;
   id: any;
   name: string;

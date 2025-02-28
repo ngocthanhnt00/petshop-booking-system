@@ -24,7 +24,8 @@ const productSchema: Schema<IProduct> = new Schema<IProduct>(
       required: [true, 'category_id is required']
     },
     image_url: {
-      type: String
+      type: [String],
+      default: []
     },
     brand_id: {
       type: Schema.Types.ObjectId,

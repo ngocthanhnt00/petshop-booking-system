@@ -19,11 +19,11 @@ export default function Home() {
   const [catProduct, setCatProduct] = useState([]);
 
   const images = [
-    '/images/banners/1.png',
-    '/images/banners/2.png',
-    '/images/banners/3.png',
-    '/images/banners/4.png',
-    '/images/banners/5.png',
+    '/images/banner/1.png',
+    '/images/banner/2.png',
+    '/images/banner/3.png',
+    '/images/banner/4.png',
+    '/images/banner/5.png',
   ];
 
   useEffect(() => {

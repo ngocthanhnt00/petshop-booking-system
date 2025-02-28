@@ -21,12 +21,17 @@ export default function DogProduct(pros: { data: APIProduct[] }) {
             key={index}
             className="group relative overflow-hidden rounded-lg border border-black p-3 text-center hover:border-[#22A6DF] md:p-4"
           >
+
+            <Image
+              src={`/images/products/${product.image_url[0]}`}
+
             <image
               src={`/images/products/${product.image_url}`}
+
               alt={product.name}
               width={150}
               height={150}
-              className="relative mx-auto h-32 w-32 md:h-[150px] md:w-[150px]"
+              className="relative mx-auto h-32 w-32 md:h-[150px] md:w-[150px] object-cover transition-transform duration-500 hover:scale-125"
             />
 
             {/* Nút tim & cart */}
