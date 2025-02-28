@@ -6,7 +6,7 @@ import useSWR from 'swr';
 
 export default function DetailProduct() {
   const params = useParams();
-  const [currentImage, setCurrentImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState('');
   const [quantity, setQuantity] = useState(1);
 
   const fetcher = (url: string | URL | Request) => fetch(url).then(res => res.json());
@@ -15,8 +15,8 @@ export default function DetailProduct() {
   });
 
   // Handling functions
-  const handleImageClick = (image: SetStateAction<string>) => {
-    setCurrentImage(image);
+  const handleImageClick = (image: string) => {
+    setSelectedImage(image);
   };
 
   const handleChange = (event: { target: { value: any } }) => {
@@ -78,36 +78,51 @@ export default function DetailProduct() {
               {product.detail1 && (
                 <img
                   src={`/images/products/${product.detail1}`}
-                  className="w-20 cursor-pointer rounded-lg border border-[#22A6DF]"
+                  alt="Detail 1"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.detail1 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
                   onClick={() => handleImageClick(product.detail1)}
                 />
               )}
               {product.detail2 && (
                 <img
                   src={`/images/products/${product.detail2}`}
-                  className="w-20 cursor-pointer rounded-lg border border-[#EAEAEA]"
+                  alt="Detail 2"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.detail2 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
                   onClick={() => handleImageClick(product.detail2)}
                 />
               )}
               {product.detail3 && (
                 <img
                   src={`/images/products/${product.detail3}`}
-                  className="w-20 cursor-pointer rounded-lg border border-[#EAEAEA]"
+                  alt="Detail 3"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.detail3 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
                   onClick={() => handleImageClick(product.detail3)}
                 />
               )}
               {product.detail4 && (
                 <img
                   src={`/images/products/${product.detail4}`}
-                  className="w-20 cursor-pointer rounded-lg border border-[#EAEAEA]"
+                  alt="Detail 4"
+                  className={`w-20 cursor-pointer rounded-lg border transition-all duration-300 ${
+                    selectedImage === product.detail4 ? 'border-[#22A6DF]' : 'border-[#EAEAEA] hover:border-[#22A6DF]'
+                  }`}
                   onClick={() => handleImageClick(product.detail4)}
                 />
               )}
             </div>
-            <img
-              src={currentImage || `/images/products/${product.image_url}`}
-              className="ml-10 w-full rounded-lg border border-[#EAEAEA] shadow-md md:w-96"
-            />
+            <div className="ml-10 w-full md:w-96">
+              <img
+                src={selectedImage ? `/images/products/${selectedImage}` : `/images/products/${product.image_url}`}
+                alt="Main product"
+                className="w-full rounded-lg border border-[#EAEAEA] shadow-md transition-all duration-300"
+              />
+            </div>
           </div>
 
           {/* Thông tin sản phẩm */}
@@ -165,98 +180,3 @@ export default function DetailProduct() {
     </div>
   );
 }
-// <div className="mt-8">
-//   <h2 className="text-xl font-bold text-gray-800">Đánh giá sản phẩm</h2>
-//   <div className="flex justify-between">
-//     <div className="mt-2 flex flex-col items-start">
-//       <div className="flex text-2xl text-yellow-500">★★★★★</div>
-//       <p className="text-sm text-[#686868]">Dựa trên 2 đánh giá</p>
-//     </div>
-
-//     <div className="flex flex-wrap gap-2">
-//       <Button className="rounded-lg bg-[#22A6DF] px-3 py-1 text-white">Tất cả</Button>
-//       <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
-//         5 sao (2)
-//       </Button>
-//       <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
-//         4 sao (0)
-//       </Button>
-//       <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
-//         2 sao (0)
-//       </Button>
-//       <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
-//         1 sao (0)
-//       </Button>
-//       <Button className="rounded-lg border border-[#EAEAEA] px-3 py-1 text-[#686868]">
-//         3 sao (0)
-//       </Button>
-//     </div>
-//   </div>
-
-//   <div className="mt-4 space-y-4">
-//     <div className="rounded-lg border p-4 shadow-md">
-//       <div className="flex items-center space-x-2">
-//         <img
-//           src="https://banner2.cleanpng.com/lnd/20240918/ko/164b0e8db7167fd67eee37afc67faa.webp"
-//           className="h-10 w-10 rounded-full"
-//         />
-//         <div>
-//           <p className="font-semibold">tinhvan2802</p>
-//           <p className="text-sm text-[#686868]">12-01-2025 15:22</p>
-//         </div>
-//       </div>
-//       <p className="mt-2 text-yellow-500">★★★★★</p>
-//       <p className="mt-1 text-black">Mùi hương: thơm, dễ chịu</p>
-//     </div>
-
-//     <div className="rounded-lg border p-4 shadow-md">
-//       <div className="flex items-center space-x-2">
-//         <img
-//           src="https://banner2.cleanpng.com/lnd/20240918/ko/164b0e8db7167fd67eee37afc67faa.webp"
-//           className="h-10 w-10 rounded-full"
-//         />
-//         <div>
-//           <p className="font-semibold">hanhan0610</p>
-//           <p className="text-sm text-[#686868]">12-01-2025 15:22</p>
-//         </div>
-//       </div>
-//       <p className="mt-2 text-yellow-500">★★★★★</p>
-//       <p className="mt-1 text-black">
-//         Hạt thơm, ngũi rất dễ chịu, shop đa dạng các mặt hàng, sẽ tiếp tục ủng hộ
-//       </p>
-//     </div>
-//   </div>
-
-//   <div className="mt-6 flex justify-center space-x-2">
-//     <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">
-//       ← Trước
-//     </Button>
-//     <Button className="rounded-lg border border-[#22A6DF] px-3 py-2 text-[#22A6DF]">
-//       1
-//     </Button>
-//     <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">2</Button>
-//     <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">3</Button>
-//     <Button className="rounded-lg border border-gray-300 px-3 py-2 text-gray-500">
-//       Tiếp →
-//     </Button>
-//   </div>
-// </div>
-
-// <div className="mt-8">
-//   <h2 className="text-center text-xl font-bold text-gray-800">Sản phẩm liên quan</h2>
-//   <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-//     {Array(4)
-//       .fill(null)
-//       .map((_, index) => (
-//         <Card key={index} className="rounded-lg border p-2 shadow-md">
-//           <img src="https://picsum.photos/300/200" className="w-full rounded-lg" />
-//           <p className="font-bold text-[#22A6DF]">130.000₫</p>
-//           <p className="mt-2 font-medium text-gray-800">Thức ăn mèo ROYAL CANIN</p>
-//         </Card>
-//       ))}
-//   </div>
-// </div>
-//       </div>
-//     </div>
-//   );
-// }

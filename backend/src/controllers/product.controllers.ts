@@ -265,3 +265,43 @@ export const getProductsByCategoryId = async (categoryId: string): Promise<any> 
   }
 }
 
+export const searchProductsByKey = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { key } = req.query;
+
+    // Kiểm tra nếu không có từ khóa
+    if (!key || typeof key !== 'string') {
+      res.status(400).json({ success: false, message: 'Vui lòng cung cấp từ khóa tìm kiếm' });
+      return;
+    }
+
+    // Tìm kiếm sản phẩm có từ khóa trong tên hoặc mô tả (không phân biệt chữ hoa/thường)
+    const result = await productModel
+      .find({
+        $or: [
+          { name: { $regex: key, $options: 'i' } }, // Tìm trong tên sản phẩm
+          { description: { $regex: key, $options: 'i' } } // Tìm trong mô tả
+        ]
+      })
+      .populate('category_id')
+      .populate('brand_id')
+      .limit(10); // Giới hạn số lượng kết quả (có thể điều chỉnh)
+
+    if (!result || result.length === 0) {
+      res.status(404).json({ success: false, message: 'Không tìm thấy sản phẩm nào' });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Tìm kiếm sản phẩm thành công',
+      products: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi tìm kiếm sản phẩm',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
