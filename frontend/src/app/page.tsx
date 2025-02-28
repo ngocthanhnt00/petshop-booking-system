@@ -82,7 +82,7 @@ export default function Home() {
     <>
       {/* Banner */}
       <div className="mt-4 px-4 sm:px-[40px] lg:px-[154px]">
-        <Image
+        <image
           src={images[currentImageIndex]}
           alt="Banner"
           width={1420}
@@ -116,7 +116,7 @@ export default function Home() {
 
         {/* Nút Xem thêm */}
         <div className="mt-6 text-center">
-          <Link href="/product">
+          <a href="/product">
             <Button className="rounded-md border border-gray-300 px-6 py-5 text-base hover:bg-gray-100">
               Xem thêm sản phẩm <span className="font-semibold">dành cho chó</span>
             </Button>
@@ -146,7 +146,7 @@ export default function Home() {
         {/* Danh sách logo thương hiệu */}
         <div className="mb-4 grid w-full grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           <div className="flex items-center justify-center">
-            <Image
+            <image
               src="/images/news/royalcanin.png"
               alt="Royal Canin"
               width={250}
@@ -155,7 +155,7 @@ export default function Home() {
             />
           </div>
           <div className="flex items-center justify-center">
-            <Image
+            <image
               src="/images/news/kitcat.png"
               alt="Kit Cat"
               width={250}
@@ -164,7 +164,7 @@ export default function Home() {
             />
           </div>
           <div className="flex items-center justify-center">
-            <Image
+            <image
               src="/images/news/gimcat.png"
               alt="Gim Cat"
               width={250}
@@ -173,7 +173,7 @@ export default function Home() {
             />
           </div>
           <div className="flex items-center justify-center">
-            <Image
+            <image
               src="/images/news/lapaw.png"
               alt="LaPaw"
               width={250}
@@ -182,7 +182,7 @@ export default function Home() {
             />
           </div>
           <div className="flex items-center justify-center">
-            <Image
+            <image
               src="/images/news/tropiclean.png"
               alt="TropiClean"
               width={250}
@@ -205,7 +205,7 @@ export default function Home() {
             {/* Ảnh bài viết chính */}
             <div className="lg:col-span-6">
               <div className="relative h-[200px] w-full sm:h-[250px] md:h-[300px]">
-                <Image
+                <image
                   src="/images/news/concho.png"
                   alt="Main Article"
                   fill
@@ -249,7 +249,7 @@ export default function Home() {
             {/* Bài viết liên quan 1 */}
             <div className="flex items-center gap-4">
               <div className="relative h-[80px] w-[100px] min-w-[100px] sm:h-[104px] sm:w-[145px] sm:min-w-[145px]">
-                <Image
+                <image
                   src="/images/news/concho.png"
                   alt="Related Article"
                   fill
@@ -267,7 +267,7 @@ export default function Home() {
             {/* Bài viết liên quan 2 */}
             <div className="flex items-center gap-4">
               <div className="relative h-[80px] w-[100px] min-w-[100px] sm:h-[104px] sm:w-[145px] sm:min-w-[145px]">
-                <Image
+                <image
                   src="/images/news/concho.png"
                   alt="Related Article"
                   fill
@@ -285,7 +285,7 @@ export default function Home() {
             {/* Bài viết liên quan 3 */}
             <div className="flex items-center gap-4">
               <div className="relative h-[80px] w-[100px] min-w-[100px] sm:h-[104px] sm:w-[145px] sm:min-w-[145px]">
-                <Image
+                <image
                   src="/images/news/concho.png"
                   alt="Related Article"
                   fill
