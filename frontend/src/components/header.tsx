@@ -1,14 +1,6 @@
 'use client';
 import { Input, Dropdown, Menu, Space, Typography, Badge, Avatar, Drawer } from 'antd';
-import {
-  FaTruck,
-  FaGift,
-  FaCheckCircle,
-  FaShoppingCart,
-  FaUserAlt,
-  FaPhoneAlt,
-  FaSearch,
-  FaBars,
+import { FaTruck, FaGift, FaCheckCircle, FaShoppingCart, FaUserAlt, FaPhoneAlt, FaSearch, FaBars,
 } from 'react-icons/fa';
 import { BsGeoAltFill } from 'react-icons/bs';
 import { Search } from 'lucide-react';
