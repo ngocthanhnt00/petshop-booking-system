@@ -17,6 +17,7 @@ export const getAllProduct = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
+
 export const getProductById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;

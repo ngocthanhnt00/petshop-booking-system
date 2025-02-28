@@ -1,11 +1,50 @@
 'use client';
+import { useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaCheckDouble } from 'react-icons/fa6';
+<<<<<<< HEAD
 import { Button, Row, Col, Typography, Input, Flex } from 'antd';
 import Link from 'next/link';
+=======
+import { Button, Row, Col, Typography, Input, Flex, message } from 'antd';
+import { useRouter } from 'next/navigation';
+>>>>>>> 8d8f38b6cac905c4a2075dfdd5c5306517e457db
 const { Title, Text } = Typography;
 
 export default function Login() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      console.log('Phản hồi từ API:', data);
+
+      if (response.ok) {
+        message.success('Đăng nhập thành công');
+        localStorage.setItem('accessToken', data.accessToken);
+        router.push('/');
+      } else {
+        message.error(data.message || 'Đăng nhập thất bại');
+      }
+    } catch (error) {
+      message.error('Có lỗi xảy ra, vui lòng thử lại');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="px-2 py-4 sm:px-5 sm:py-6">
       {/* Title */}
@@ -64,8 +103,15 @@ export default function Login() {
               <button className="h-full w-1/2 rounded-none border-[#22A6DF] bg-[#22A6DF] text-sm text-white sm:text-base">
                 Đăng Nhập
               </button>
+<<<<<<< HEAD
               <Link href="/signup">
               <button className="h-full w-1/2 rounded-none border border-[#686868] text-sm hover:border-[#22A6DF] hover:text-[#22A6DF] sm:text-base">
+=======
+              <button
+                onClick={() => router.push('/signup')}
+                className="h-full w-1/2 rounded-none border border-[#686868] text-sm hover:border-[#22A6DF] hover:text-[#22A6DF] sm:text-base"
+              >
+>>>>>>> 8d8f38b6cac905c4a2075dfdd5c5306517e457db
                 Đăng Ký
               </button>
               </Link>
@@ -80,6 +126,8 @@ export default function Login() {
                   id="email"
                   placeholder="Nhập email của bạn"
                   className="mt-2 h-9 text-sm sm:h-10 sm:text-base"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                 />
               </div>
               <div className="mb-2 pb-2 text-sm sm:text-base">
@@ -91,6 +139,8 @@ export default function Login() {
                   id="password"
                   placeholder="Nhập mật khẩu của bạn"
                   className="mt-2 h-9 text-sm sm:h-10 sm:text-base"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                 />
               </div>
               <div className="mb-3">
@@ -103,8 +153,12 @@ export default function Login() {
 
           <div className="flex flex-col items-center px-3 sm:px-5">
             <Flex justify="space-between" className="mb-2 w-full">
-              <button className="h-9 w-[48%] rounded-md bg-black text-xs text-white hover:bg-[#22A6DF] sm:h-10 sm:text-sm">
-                Đăng nhập
+              <button
+                className="h-9 w-[48%] rounded-md bg-black text-xs text-white hover:bg-[#22A6DF] sm:h-10 sm:text-sm"
+                onClick={handleLogin}
+                disabled={loading}
+              >
+                {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
               </button>
               <span className="my-auto px-1 text-sm sm:text-base">Hoặc</span>
               <Button

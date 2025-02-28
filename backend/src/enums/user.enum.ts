@@ -5,13 +5,13 @@ export enum UserRoles {
 }
 
 export enum UserSex {
-  MALE = 'Nam',
-  FEMALE = 'Nữ',
-  OTHER = 'Khác',
-  PREFER_NOT_TO_SAY = 'Không muốn nói'
+  MALE = 'male',
+  FEMALE = 'female',
+  OTHER = 'other',
+  PREFER_NOT_TO_SAY = 'prefer not to say'
 }
 
 export enum UserStatus {
-  ACTIVE = 'hoạt động',
-  INACTIVE = 'không hoạt động'
+  ACTIVE = 'active',
+  INACTIVE = 'inactive'
 }
