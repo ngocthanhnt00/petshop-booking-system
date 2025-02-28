@@ -1,8 +1,8 @@
 export enum ProductStatus {
-  AVAILABLE = 'có hàng',
-  OUT_OF_STOCK = 'hết hàng',
-  DISCONTINUED = 'ngừng kinh doanh',
-  COMING_SOON = 'sắp ra mắt'
+  AVAILABLE = 'available',
+  OUT_OF_STOCK = 'out of stock',
+  DISCONTINUED = 'discontinued',
+  COMING_SOON = 'coming soon'
 }
 
 export const ProductStatusMapping: Record<string, ProductStatus> = {

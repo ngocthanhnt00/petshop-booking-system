@@ -1,4 +1,4 @@
 export enum CategoryStatus {
-  ACTIVE = 'hoạt động',
-  INACTIVE = 'không hoạt động'
+  ACTIVE = 'active',
+  INACTIVE = 'inactive'
 }
