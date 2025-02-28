@@ -9,7 +9,7 @@ export interface IProduct {
   description: string;
   price: string;
   category_id: ICategory;
-  image_url: string;
+  image_url: [];
   brand_id: IBrand;
   createdAt: Date;
   updatedAt: Date;

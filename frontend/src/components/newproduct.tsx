@@ -119,7 +119,7 @@ export default function NewProduct({ data }: { data: APIProduct[] }) {
               <div className="flex">
                 <div className="w-1/4 overflow-hidden">
                   <Image
-                    src={`/images/products/${product.image_url}`}
+                    src={`/images/products/${product.image_url[0]}`}
                     alt={product.name}
                     width={128}
                     height={140}

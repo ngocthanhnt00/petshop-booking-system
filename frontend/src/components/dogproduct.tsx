@@ -22,7 +22,7 @@ export default function DogProduct(pros: { data: APIProduct[] }) {
             className="group relative overflow-hidden rounded-lg border border-black p-3 text-center hover:border-[#22A6DF] md:p-4"
           >
             <Image
-              src={`/images/products/${product.image_url}`}
+              src={`/images/products/${product.image_url[0]}`}
               alt={product.name}
               width={150}
               height={150}

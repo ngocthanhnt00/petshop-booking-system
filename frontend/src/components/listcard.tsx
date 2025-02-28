@@ -34,7 +34,7 @@ export default function ListCard({ pros }: { pros: { data: APIProduct[] } }) {
             {/* Icon Trái tim */}
             <div className="relative mx-auto mb-3 flex items-center justify-center rounded-md">
               <img
-                src={`/images/products/${product.image_url}`}
+                src={`/images/products/${product.image_url[0]}`}
                 className="mx-auto mb-3 rounded-md bg-[#EAEAEA] transition-transform duration-300 group-hover:scale-105 sm:h-36 sm:max-w-36 lg:h-44 lg:w-44"
                 alt={product.name}
               />
