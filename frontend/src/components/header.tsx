@@ -264,7 +264,7 @@ export default function Header() {
                 Giới thiệu
               </Typography.Text>
             </Link>
-            <Link href="#">
+            <Link href="/contact">
               <Typography.Text className="text-sm font-bold hover:text-[#22A6DF] lg:text-sm xl:text-lg">
                 Liên hệ
               </Typography.Text>
@@ -377,3 +377,4 @@ export default function Header() {
     </>
   );
 }
+
