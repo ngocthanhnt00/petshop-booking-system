@@ -75,6 +75,7 @@ export default function DetailProduct() {
   ];
 
   return (
+    <h1>fack u</h1>
     <div className="text-black">
       {/* Breadcrumb */}
       <nav className="mx-auto max-w-6xl p-4 text-sm text-[#686868]">
